@@ -14,6 +14,8 @@ const ProductPage = () => {
   const [leftLanguage, setLeftLanguage] = useState(defaultLanguage);
   const [rightLanguage, setRightLanguage] = useState(defaultLanguage);
   const [isConvertDisabled, setIsConvertDisabled] = useState(true);
+  const [showSourcecodeOutput, setShowSourcecodeOutput] = useState(false);
+  const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
 
   const getRightDropdownLanguages = (leftLang) => {
     if (leftLang.value === 'sql') {
@@ -38,6 +40,14 @@ const ProductPage = () => {
     if (isConvertDisabled) {
       toast.info('Please run the source code to convert the code');
     }
+  };
+
+  const handleRunSourcecodeInput = () => {
+    setShowSourcecodeOutput(true);
+  };
+
+  const handleRunConvertedcode = () => {
+    setShowConvertedcodeOutput(true);
   };
 
   return (
@@ -83,8 +93,8 @@ const ProductPage = () => {
         </div>
 
         <div className="flex justify-between mb-4">
-          <SourcecodeInput />
-          <Convertedcode />
+          <SourcecodeInput onRun={handleRunSourcecodeInput} />
+          <Convertedcode onRun={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">
@@ -101,8 +111,8 @@ const ProductPage = () => {
         </div>
 
         <div className="flex justify-between mt-8">
-          <SourcecodeOutput onOutputChange={handleOutputChange} />
-          <ConvertedcodeOutput />
+          {showSourcecodeOutput && <SourcecodeOutput onOutputChange={handleOutputChange} />}
+          {showConvertedcodeOutput && <ConvertedcodeOutput />}
         </div>
       </div>
     </>

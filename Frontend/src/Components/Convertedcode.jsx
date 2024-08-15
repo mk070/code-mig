@@ -5,7 +5,7 @@ import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
 
-export const Convertedcode = () => {
+export const Convertedcode = ({ onRun }) => {
   const [code, setCode] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
@@ -16,7 +16,6 @@ export const Convertedcode = () => {
     return Array.from({ length: lines }, (_, i) => i + 1).join('\n');
   };
 
-  // Function to synchronize scrolling
   const syncScroll = () => {
     if (lineNumbersRef.current && codeContainerRef.current) {
       lineNumbersRef.current.scrollTop = codeContainerRef.current.scrollTop;
@@ -38,7 +37,9 @@ export const Convertedcode = () => {
         draggable: true,
         progress: undefined,
       });
-    } 
+    } else {
+      onRun();  // Trigger the callback to show ConvertedcodeOutput
+    }
   };
 
   return (
