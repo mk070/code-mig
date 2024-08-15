@@ -1,14 +1,26 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import UploadButton from './UploadButton';
 import CloseIcon from '@mui/icons-material/Close';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { toast } from 'react-toastify';
 
 const SourcecodeInput = () => {
   const [code, setCode] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
+  const [githubLink, setGithubLink] = useState('');
+  const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    if (code.trim() || githubLink || files.length > 0) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [code, githubLink, files]);
 
   const handleInputChange = (e) => {
     setCode(e.target.value);
@@ -23,6 +35,14 @@ const SourcecodeInput = () => {
     if (lineNumbersRef.current && codeContainerRef.current) {
       lineNumbersRef.current.scrollTop = codeContainerRef.current.scrollTop;
     }
+  };
+
+  const handleFileUpload = (newFiles) => {
+    setFiles(newFiles);
+  };
+
+  const handleGithubLinkChange = (link) => {
+    setGithubLink(link);
   };
 
   return (
@@ -64,11 +84,17 @@ const SourcecodeInput = () => {
       </div>
       <div className="mt-2 flex items-center justify-between">
         <div className="flex items-center w-1/2">
-          <UploadButton />
+          <UploadButton onFileUpload={handleFileUpload} onGithubLinkChange={handleGithubLinkChange} />
         </div>
         <button
           type="button"
-          className="ml-2 w-1/2 p-2.5 bg-green-600 gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-500 transition duration-300 ease-in-out"
+          className={`ml-2 w-1/2 p-2.5 ${isButtonDisabled ? 'bg-green-300' : 'bg-green-600'} gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm hover:${isButtonDisabled ? 'bg-gray-400' : 'bg-green-500'} transition duration-300 ease-in-out`}
+          onClick={() => {
+            if (isButtonDisabled) {
+              console.log("hello")
+              toast.info('Please provide code or upload a file or GitHub link.');
+            }
+          }}
         >
           <PlayArrowIcon />
           Run

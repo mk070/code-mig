@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const FileUploadPopup = ({ onClose }) => {
+const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
   const [githubLink, setGithubLink] = useState('');
   const [repoStructure, setRepoStructure] = useState([]);
   const [files, setFiles] = useState([]);
@@ -11,21 +12,22 @@ const FileUploadPopup = ({ onClose }) => {
   const handleFileChange = (e) => {
     const fileArray = Array.from(e.target.files);
     setFiles(fileArray);
-    setSelectedFile(null); // Reset selected file when new files are selected
-    setRepoStructure([]); // Clear repo structure when new files are selected
+    setSelectedFile(null); 
+    setRepoStructure([]); 
+    onFileUpload(fileArray); 
   };
 
   const handleLinkChange = (e) => {
     setGithubLink(e.target.value);
+    onGithubLinkChange(e.target.value); 
   };
 
   const fetchRepoStructure = async () => {
     if (!githubLink) return;
 
-    // Extract the owner and repo name from the GitHub link
     const match = githubLink.match(/github\.com\/([^\/]+)\/([^\/]+)/);
     if (!match) {
-      alert('Invalid GitHub URL');
+      toast.info('Invalid GitHub URL');
       return;
     }
 
@@ -35,7 +37,7 @@ const FileUploadPopup = ({ onClose }) => {
         `https://api.github.com/repos/${owner}/${repo}/contents/${currentPath}`
       );
       setRepoStructure(response.data);
-      setFiles([]); // Clear file uploads when loading a repo
+      setFiles([]); 
     } catch (error) {
       console.error('Error fetching repository structure:', error);
       alert('Failed to fetch repository structure');
@@ -53,23 +55,23 @@ const FileUploadPopup = ({ onClose }) => {
 
   const handleSubmit = async () => {
     if (!selectedFile) {
-      alert("Please select a main file.");
+      toast.info("Please select a main file.");
       return;
     }
 
     const formData = new FormData();
     
-    // Append each file to the FormData object if files were uploaded
+  
     if (files.length > 0) {
       files.forEach(file => {
         formData.append('files', file);
       });
     }
     
-    // Append the main file name (either from uploaded files or repo)
+
     formData.append('main_file', selectedFile);
     
-    // Append the GitHub link if provided
+
     if (githubLink) {
       formData.append('github_link', githubLink);
     }
@@ -82,10 +84,8 @@ const FileUploadPopup = ({ onClose }) => {
       });
 
       if (response.status === 200) {
-        // Handle success
         console.log("Files uploaded successfully");
       } else {
-        // Handle errors
         console.error("Error uploading files");
       }
     } catch (error) {
