@@ -1,10 +1,13 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import MaximizeIcon from '@mui/icons-material/Maximize';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { toast } from 'react-toastify';
 
 export const Convertedcode = () => {
   const [code, setCode] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
 
@@ -13,10 +16,29 @@ export const Convertedcode = () => {
     return Array.from({ length: lines }, (_, i) => i + 1).join('\n');
   };
 
+  // Function to synchronize scrolling
   const syncScroll = () => {
     if (lineNumbersRef.current && codeContainerRef.current) {
       lineNumbersRef.current.scrollTop = codeContainerRef.current.scrollTop;
     }
+  };
+
+  useEffect(() => {
+    setIsButtonDisabled(code.trim().length === 0);
+  }, [code]);
+
+  const handleRunClick = () => {
+    if (isButtonDisabled) {
+      toast.warn('Please convert the code first.', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } 
   };
 
   return (
@@ -58,8 +80,10 @@ export const Convertedcode = () => {
       </div>
       <button
         type="button"
-        className="mt-2 w-full p-2.5 bg-green-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-500 transition duration-300 ease-in-out"
+        className={`gap-2 flex items-center justify-center text-white text-sm mt-2 w-full p-2.5 ${isButtonDisabled ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-600'} text-sm font-medium rounded-md shadow-sm transition duration-300 ease-in-out p-2`}
+        onClick={handleRunClick}
       >
+        <PlayArrowIcon />
         Run
       </button>
     </div>
