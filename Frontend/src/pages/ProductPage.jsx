@@ -11,8 +11,8 @@ import { toast } from 'react-toastify';
 
 const ProductPage = () => {
   const defaultLanguage = languages[0]; // Set the first language as the default
-  const [leftLanguage, setLeftLanguage] = useState(defaultLanguage);
-  const [rightLanguage, setRightLanguage] = useState(defaultLanguage);
+  const [SourceLanguage, setSourceLanguage] = useState(defaultLanguage);
+  const [TargetLanguage, setTargetLanguage] = useState(defaultLanguage);
   const [isConvertDisabled, setIsConvertDisabled] = useState(true);
   const [showSourcecodeOutput, setShowSourcecodeOutput] = useState(false);
   const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
@@ -66,11 +66,11 @@ const ProductPage = () => {
               htmlFor="left-lang"
               className="block mb-2 text-sm font-medium text-gray-700"
             >
-              Select Language
+              Source Language
             </label>
             <CustomDropdown
-              selectedLanguage={leftLanguage}
-              setSelectedLanguage={setLeftLanguage}
+              selectedLanguage={SourceLanguage}
+              setSelectedLanguage={setSourceLanguage}
               id="left-lang"
               availableLanguages={languages}
             />
@@ -81,20 +81,20 @@ const ProductPage = () => {
               htmlFor="right-lang"
               className="block mb-2 text-sm font-medium text-gray-700"
             >
-              Select Language
+              Target Language
             </label>
             <CustomDropdown
-              selectedLanguage={rightLanguage}
-              setSelectedLanguage={setRightLanguage}
+              selectedLanguage={TargetLanguage}
+              setSelectedLanguage={setTargetLanguage}
               id="right-lang"
-              availableLanguages={getRightDropdownLanguages(leftLanguage)}
+              availableLanguages={getRightDropdownLanguages(SourceLanguage)}
             />
           </div>
         </div>
 
         <div className="flex justify-between mb-4">
-          <SourcecodeInput onRun={handleRunSourcecodeInput} />
-          <Convertedcode onRun={handleRunConvertedcode} />
+          <SourcecodeInput setSelectedLanguage={setSourceLanguage} onRun={handleRunSourcecodeInput} />
+          <Convertedcode setSelectedLanguage={setTargetLanguage} onRun={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">

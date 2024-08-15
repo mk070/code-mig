@@ -7,7 +7,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-const SourcecodeInput = ({ onRunComplete }) => {
+const SourcecodeInput = ({ onRunComplete, sourcelanguage, targetlanguage }) => {
   const [code, setCode] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
@@ -49,7 +49,11 @@ const SourcecodeInput = ({ onRunComplete }) => {
   const handleRun = async () => {
     try {
       const formData = new FormData();
+      const sourcelanguage = "cobol"
+      const targetlanguage = "targetlanguage"
       formData.append('code', code);
+      formData.append('sourcelanguage', sourcelanguage);
+      formData.append('targetlanguage', targetlanguage);
 
       if (githubLink) {
         formData.append('github_link', githubLink);
