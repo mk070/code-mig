@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import UploadButton from './UploadButton';
 import CloseIcon from '@mui/icons-material/Close';
 import MinimizeIcon from '@mui/icons-material/Minimize';
@@ -6,7 +6,7 @@ import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
 
-const SourcecodeInput = () => {
+const SourcecodeInput = ({ onRun }) => {
   const [code, setCode] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
@@ -88,13 +88,15 @@ const SourcecodeInput = () => {
         </div>
         <button
           type="button"
-          className={`ml-2 w-1/2 p-2.5 ${isButtonDisabled ? 'bg-green-300' : 'bg-green-600'} gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm hover:${isButtonDisabled ? 'bg-gray-400' : 'bg-green-500'} transition duration-300 ease-in-out`}
+          className={`ml-2 w-1/2 p-2.5 ${isButtonDisabled ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600'} gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm  transition duration-300 ease-in-out`}
           onClick={() => {
-            if (isButtonDisabled) {
-              console.log("hello")
+            if (!isButtonDisabled) {
+              onRun();
+            } else {
               toast.info('Please provide code or upload a file or GitHub link.');
             }
           }}
+          disabled={isButtonDisabled}
         >
           <PlayArrowIcon />
           Run
