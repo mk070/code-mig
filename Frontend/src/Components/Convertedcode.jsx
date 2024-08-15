@@ -29,7 +29,7 @@ export const Convertedcode = () => {
 
   const handleRunClick = () => {
     if (isButtonDisabled) {
-      toast.warn('Please convert the code first.', {
+      toast.info('Please convert the code first.', {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
