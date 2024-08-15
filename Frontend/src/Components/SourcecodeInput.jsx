@@ -5,8 +5,9 @@ import MinimizeIcon from '@mui/icons-material/Minimize';
 import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
-const SourcecodeInput = ({ onRun }) => {
+const SourcecodeInput = ({ onRunComplete }) => {
   const [code, setCode] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
@@ -43,6 +44,39 @@ const SourcecodeInput = ({ onRun }) => {
 
   const handleGithubLinkChange = (link) => {
     setGithubLink(link);
+  };
+
+  const handleRun = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('code', code);
+
+      if (githubLink) {
+        formData.append('github_link', githubLink);
+      }
+
+      if (files.length > 0) {
+        files.forEach((file) => {
+          formData.append('files', file);
+        });
+      }
+
+      const response = await axios.post('http://127.0.0.1:8000/compile/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 200) {
+        toast.success('Code executed successfully!');
+        onRunComplete(response.data.output);
+      } else {
+        toast.error('Error executing code.');
+      }
+    } catch (error) {
+      console.error('Error running code:', error);
+      toast.error('An error occurred while running the code.');
+    }
   };
 
   return (
@@ -91,7 +125,7 @@ const SourcecodeInput = ({ onRun }) => {
           className={`ml-2 w-1/2 p-2.5 ${isButtonDisabled ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600'} gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm  transition duration-300 ease-in-out`}
           onClick={() => {
             if (!isButtonDisabled) {
-              onRun();
+              handleRun();
             } else {
               toast.info('Please provide code or upload a file or GitHub link.');
             }
