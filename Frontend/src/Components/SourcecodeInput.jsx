@@ -88,7 +88,7 @@ const SourcecodeInput = () => {
         </div>
         <button
           type="button"
-          className={`ml-2 w-1/2 p-2.5 ${isButtonDisabled ? 'bg-green-300' : 'bg-green-600'} gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm hover:${isButtonDisabled ? 'bg-gray-400' : 'bg-green-500'} transition duration-300 ease-in-out`}
+          className={`ml-2 w-1/2 p-2.5 ${isButtonDisabled ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600'} gap-2 flex items-center justify-center text-white text-sm font-medium rounded-md shadow-sm  transition duration-300 ease-in-out`}
           onClick={() => {
             if (isButtonDisabled) {
               console.log("hello")
