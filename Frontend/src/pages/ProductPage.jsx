@@ -93,8 +93,8 @@ const ProductPage = () => {
         </div>
 
         <div className="flex justify-between mb-4">
-          <SourcecodeInput setSelectedLanguage={setSourceLanguage} onRun={handleRunSourcecodeInput} />
-          <Convertedcode setSelectedLanguage={setTargetLanguage} onRun={handleRunConvertedcode} />
+          <SourcecodeInput SourceLanguage={SourceLanguage} TargetLanguage={TargetLanguage} onRun={handleRunSourcecodeInput} />
+          <Convertedcode  onRun={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">
