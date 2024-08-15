@@ -1,0 +1,5 @@
+django
+google-generativeai
+python-dotenv
+subprocess.run
+openai
