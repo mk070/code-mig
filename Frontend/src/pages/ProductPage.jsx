@@ -117,12 +117,6 @@ const ProductPage = () => {
     Start Converting Your Legacy Code
   </h1>
 </div>
-
-
-
-
-
-
         {/* language */}
         <div className="flex justify-between mb-4">
           <div className="w-1/2 pr-2">

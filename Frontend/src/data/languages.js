@@ -1,9 +1,9 @@
-import cobol from '../assets/cobol-image.png'
-import java from '../assets/java-image.png'
+import cobol from '../assets/cobol-img.png'
+import java from '../assets/java-img.png'
 import dotnet from '../assets/dotnet-img.png'
-import python from '../assets/python-image.png'
-import pyspark from '../assets/pyspark-image.png'
-import sql from '../assets/sql-img.webp'
+import python from '../assets/python-img.png'
+import pyspark from '../assets/pyspark-img.png'
+import sql from '../assets/sql-img.png'
 
 export const languages = [
   {
