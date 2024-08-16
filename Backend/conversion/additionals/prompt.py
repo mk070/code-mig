@@ -2,31 +2,20 @@ from .languages import get_file_extension
 
 # Conversion Prompt
 def conversion_prompt(source_file_data, source_language, target_language):
-    print("source_file_data /prompt.py : ",source_file_data)
-    print("source_language /prompt.py : ",source_language)
-    print("target_language /prompt.py : ",target_language)
     target_ext = get_file_extension(target_language)
     prompt = f"""
-You are an advanced AI specializing in code conversion. Your task is to convert multiple {source_language} source files to the {target_language} language while preserving their functionality and structure. The source files are provided in a dictionary format where the 'code' key contains the COBOL source files, and each key represents a filename with its corresponding code. The 'external_files' key lists the associated external files such as datasets and database files, but you do not need to include these in your output.
+You are an advanced AI specializing in code conversion. Your task is to convert multiple {source_language} source files to the {target_language} language while preserving their functionality and structure. The source files are provided in a dictionary format where the 'code' key contains the {source_language} source files, and each key represents a filename with its corresponding code.
 
 **Instructions:**
-1. Convert each COBOL source file within the 'code' dictionary to {target_language}.
-2. Ensure that the functionality is fully preserved in the converted code.
-3. Maintain correct syntax, indentation, and code structure in the converted code.
-4. Escape all strings in the output to be JSON-compliant. Specifically, ensure that all double quotes (`"`) inside strings are properly escaped with a backslash (`\\`).
-5. Validate that the output is a well-formed JSON object before returning it.
-6. If any external references (datasets, database files) are present in the source code, ensure equivalent handling in the target code. However, do not include the 'external_files' key in your response.
-7. If certain legacy COBOL functionalities cannot be directly converted due to the limitations or differences in the target language, adapt the code appropriately while maintaining the original intent and functionality. Provide a working solution rather than changing the entire functionality unnecessarily.
-8. Return the converted files in the same dictionary format with a 'code' key. Each key should represent the filename with the {target_ext} extension and its corresponding converted code as the value.
-
-**Example Response Format:**
-{{
-    'code': {{
-        'main.{target_ext}': 'code for main.{target_ext} file',
-        'subprogram1.{target_ext}': 'code for subprogram1.{target_ext} file',
-        'subprogram2.{target_ext}': 'code for subprogram2.{target_ext} file'
-    }}
-}}
+1. Convert all the {source_language} source files provided in the 'code' dictionary to {target_language}.
+2. Merge the converted code into a single output file.
+3. Ensure that all functionalities from the input source files are available and preserved in the converted target file.
+4. Maintain correct syntax, indentation, and code structure in the converted code.
+5. Handle `.DAT` files and other external files correctly based on their format. If the file is binary or has a specific encoding, ensure the converted code reads and processes the file using the correct methods.
+6. Initialize all variables, properties, and fields appropriately to avoid any nullability warnings (such as CS8618 or CS8600 in C#) or runtime errors. If a property or field is non-nullable, ensure it is initialized with a default value or through a constructor.
+7. Do not include any functionality in the converted code that requires user input to terminate the execution unless that functionality is explicitly present in the source code.
+8. If certain legacy COBOL functionalities cannot be directly converted due to limitations or differences in the target language, adapt the code appropriately while maintaining the original intent and functionality. Provide a working solution rather than changing the entire functionality unnecessarily.
+9. Return only the final converted code as the output, with no additional explanations or metadata.
 
 Here is the source file data for conversion:
 

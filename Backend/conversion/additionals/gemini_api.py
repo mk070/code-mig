@@ -7,15 +7,13 @@ from .prompt import conversion_prompt, accuracy_prompt
 load_dotenv()
 
 # Load the API key from .env file
-GEMINI_API_KEY = 'AIzaSyDNmwDtBeRtS_0KQR0DTMCLMfW-bK6IGTU'
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 def convert_code(source_code, source_language, target_language):
     try:
-        # Log the languages being used
         print(f"Converting from {source_language} to {target_language}")
         
-        # Generate the refined prompt
         refined_prompt = conversion_prompt(source_code, source_language, target_language)
         print(f"Refined prompt generated: {refined_prompt}")
         
@@ -26,18 +24,27 @@ def convert_code(source_code, source_language, target_language):
             }
         ]
 
-        # Initialize the model and generate content
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
-        
-        # Check if response contains text
-        if hasattr(response, 'text'):
-            print("Conversion successful")
-            return response.text
+        print(f"Raw API response: {response}")  # Log the full API response
+
+        # Checking response type and content
+        if isinstance(response, list):
+            if len(response) > 0:
+                print(f"First item in response: {response[0]}")
+                if hasattr(response[0], 'text'):
+                    print("Conversion successful")
+                    return response[0].text
+            raise ValueError("No valid text attribute found in the list response")
+        elif isinstance(response, dict):
+            if 'text' in response:
+                print("Conversion successful")
+                return response['text']
+            raise ValueError("No valid text attribute found in the dictionary response")
         else:
-            print("Conversion failed, no text in response")
-            raise ValueError("No text in response from API")
-    
+            print("Unexpected response type or missing 'text' attribute")
+            raise ValueError("No valid text attribute found in the response")
+
     except Exception as e:
         print(f"Error in convert_code: {str(e)}")
         raise
@@ -61,14 +68,18 @@ def check_accuracy(source_language, source_output, target_language, target_outpu
         # Initialize the model and generate content
         model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
+        print(f"Raw API response: {response}")
         
         # Check if response contains text
-        if hasattr(response, 'text'):
+        if isinstance(response, list) and len(response) > 0 and hasattr(response[0], 'text'):
             print("Accuracy check successful")
-            return response.text
+            return response[0].text
+        elif isinstance(response, dict) and 'text' in response:
+            print("Accuracy check successful")
+            return response['text']
         else:
-            print("Accuracy check failed, no text in response")
-            raise ValueError("No text in response from API")
+            print("Accuracy check failed, no valid text attribute found in the response")
+            raise ValueError("No valid text attribute found in the response")
     
     except Exception as e:
         print(f"Error in check_accuracy: {str(e)}")

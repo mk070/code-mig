@@ -77,11 +77,12 @@ const ProductPage = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        responseType: 'text', // Expecting plain text response
       });
 
-      if (response.status === 200 && response.data.status === 'success') {
+      if (response.status === 200) {
         toast.success('Code converted successfully!');
-        setConvertedCode(response.data.converted_code); // Assuming 'converted_code' is the key in response
+        setConvertedCode(response.data); // Directly set the plain text response
         setShowConvertedcodeOutput(true);
       } else {
         toast.error('Error converting code.');
@@ -99,29 +100,24 @@ const ProductPage = () => {
         toast.error('Error in setting up the request.');
       }
     }
-};
+  };
 
   return (
     <>
       <Navbar />
       <div className="container mx-auto px-24 py-4">
-      <div className="flex flex-col items-center justify-center h-8 py-4 mb-16 my-8 w-full">
-  <h1
-    className="text-4xl font-bold tracking-tight"
-    style={{
-      color: "#2D3748", // Dark gray for a strong, professional appearance
-      textShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", // Very subtle shadow to add depth
-      lineHeight: "1.2",
-    }}
-  >
-    Start Converting Your Legacy Code
-  </h1>
-</div>
-
-
-
-
-
+        <div className="flex flex-col items-center justify-center h-8 py-4 mb-16 my-8 w-full">
+          <h1
+            className="text-4xl font-bold tracking-tight"
+            style={{
+              color: "#2D3748", // Dark gray for a strong, professional appearance
+              textShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", // Very subtle shadow to add depth
+              lineHeight: "1.2",
+            }}
+          >
+            Start Converting Your Legacy Code
+          </h1>
+        </div>
 
         {/* language */}
         <div className="flex justify-between mb-4">
@@ -133,10 +129,10 @@ const ProductPage = () => {
               Source Language
             </label>
             <CustomDropdown
-                selectedLanguage={SourceLanguage}
-                setSelectedLanguage={handleSourceLanguageChange}
-                id="left-lang"
-                availableLanguages={languages}
+              selectedLanguage={SourceLanguage}
+              setSelectedLanguage={handleSourceLanguageChange}
+              id="left-lang"
+              availableLanguages={languages}
             />
           </div>
 
@@ -148,16 +144,20 @@ const ProductPage = () => {
               Target Language
             </label>
             <CustomDropdown
-                selectedLanguage={TargetLanguage}
-                setSelectedLanguage={handleTargetLanguageChange}
-                id="right-lang"
-                availableLanguages={getRightDropdownLanguages(SourceLanguage)}
+              selectedLanguage={TargetLanguage}
+              setSelectedLanguage={handleTargetLanguageChange}
+              id="right-lang"
+              availableLanguages={getRightDropdownLanguages(SourceLanguage)}
             />
           </div>
         </div>
 
         <div className="flex justify-between mb-4">
-          <SourcecodeInput SourceLanguage={SourceLanguage} TargetLanguage={TargetLanguage} onRunComplete={handleRunSourcecodeInput} />
+          <SourcecodeInput
+            SourceLanguage={SourceLanguage}
+            TargetLanguage={TargetLanguage}
+            onRunComplete={handleRunSourcecodeInput}
+          />
           <Convertedcode code={convertedCode} onRun={handleRunConvertedcode} />
         </div>
 
@@ -165,7 +165,7 @@ const ProductPage = () => {
           <button
             type="button"
             className={`p-3 w-1/3 justify-center gap-2 items-center flex ${
-              isConvertDisabled ? 'bg-[#b7a8f3] cursor-not-allowed' : 'bg-[#a289ef]'
+              isConvertDisabled ? 'bg-[#b7a8f3] cursor-not-allowed' : 'bg-[#7950f5]'
             } text-white text-lg font-medium rounded-md shadow-sm`}
             onClick={handleConvertClick}
             disabled={isConvertDisabled}
@@ -176,7 +176,9 @@ const ProductPage = () => {
         </div>
 
         <div className="flex justify-between mt-8">
-          {showSourcecodeOutput && <SourcecodeOutput content={output} onOutputChange={handleOutputChange} />}
+          {showSourcecodeOutput && (
+            <SourcecodeOutput content={output} onOutputChange={handleOutputChange} />
+          )}
           {showConvertedcodeOutput && <ConvertedcodeOutput />}
         </div>
       </div>
