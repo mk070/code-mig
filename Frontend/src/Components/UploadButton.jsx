@@ -8,19 +8,22 @@ const UploadButton = ({ onFileUpload, onGithubLinkChange }) => {
   const handleButtonClick = () => {
     setOpenPopup(true);
   };
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+  };
 
   return (
     <>
       <button
         onClick={handleButtonClick}
-        className="ml-2 w-full p-2.5 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm flex items-center justify-center"
+        className="flex items-center p-2 bg-blue-500 text-white rounded-md"
       >
         <UploadIcon className="mr-2" />
-        Upload Files or Link
+        Upload
       </button>
       {openPopup && (
         <FileUploadPopup
-          onClose={() => setOpenPopup(false)}
+          onClose={handleClosePopup}
           onFileUpload={onFileUpload}
           onGithubLinkChange={onGithubLinkChange}
         />

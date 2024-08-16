@@ -15,13 +15,11 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
   const handleFileChange = (e) => {
     const fileArray = Array.from(e.target.files);
     setFiles(fileArray);
-    
     if (fileArray.length === 1) {
       setSelectedMainFile(fileArray[0]);
     } else {
       setSelectedMainFile(null);
     }
-    
     setSelectedDatabaseFile(null);
     onFileUpload(fileArray);
   };
@@ -99,11 +97,11 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
     }
 
     if (selectedMainFile) {
-      formData.append('main_file', selectedMainFile);
+      formData.append('main_file_name', selectedMainFile.name); // Send filename as string
     }
 
     if (includeDatabase && selectedDatabaseFile) {
-      formData.append('database_file', selectedDatabaseFile);
+      formData.append('database_file_name', selectedDatabaseFile.name); // Send filename as string
     }
 
     if (githubLink) {
@@ -111,14 +109,11 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
     }
 
     try {
-
-
       const mainFileContent = await readFileContent(selectedMainFile);
 
       onFileUpload(files, mainFileContent);
 
       const response = await axios.post('http://localhost:8000/upload', formData, {
-
         headers: {
           'Content-Type': 'multipart/form-data'
         }
