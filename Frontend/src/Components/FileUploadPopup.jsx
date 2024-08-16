@@ -112,11 +112,13 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
 
     try {
 
+
       const mainFileContent = await readFileContent(selectedMainFile);
 
       onFileUpload(files, mainFileContent);
 
       const response = await axios.post('http://localhost:8000/upload', formData, {
+
         headers: {
           'Content-Type': 'multipart/form-data'
         }

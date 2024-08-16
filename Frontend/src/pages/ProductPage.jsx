@@ -8,6 +8,7 @@ import ConvertedcodeOutput from '../Components/ConvertedcodeOutput.jsx';
 import { Navbar } from '../Layout/Navbar.jsx';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const ProductPage = () => {
   const defaultLanguage = languages[0]; // Set the first language as the default
@@ -16,6 +17,8 @@ const ProductPage = () => {
   const [isConvertDisabled, setIsConvertDisabled] = useState(true);
   const [showSourcecodeOutput, setShowSourcecodeOutput] = useState(false);
   const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
+  const [output, setOutput] = useState(''); // State to hold the output from the backend
+  const [convertedCode, setConvertedCode] = useState(''); // State to hold the converted code
 
   const getRightDropdownLanguages = (leftLang) => {
     if (leftLang.value === 'sql') {
@@ -32,22 +35,66 @@ const ProductPage = () => {
     }
   };
 
+  const handleSourceLanguageChange = (language) => {
+    console.log("Selected Source Language:", language);
+    setSourceLanguage(language);
+  };
+
+  const handleTargetLanguageChange = (language) => {
+    console.log("Selected Target Language:", language);
+    setTargetLanguage(language);
+  };
+
   const handleOutputChange = (content) => {
     setIsConvertDisabled(content.length === 0);
   };
 
-  const handleConvertClick = () => {
-    if (isConvertDisabled) {
-      toast.info('Please run the source code to convert the code');
-    }
-  };
-
-  const handleRunSourcecodeInput = () => {
+  const handleRunSourcecodeInput = (output) => {
+    setOutput(output); // Capture the output from the SourcecodeInput
     setShowSourcecodeOutput(true);
+    setIsConvertDisabled(false); // Enable the Convert button after code execution
   };
 
   const handleRunConvertedcode = () => {
     setShowConvertedcodeOutput(true);
+  };
+
+  const handleConvertClick = async () => {
+    if (!SourceLanguage.value || !TargetLanguage.value) {
+      toast.error('Please select both source and target languages.');
+      return;
+    }
+
+    console.log("Source Language:", SourceLanguage.value);
+    console.log("Target Language:", TargetLanguage.value);
+    
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/conversion/', {
+        source_language: SourceLanguage.value,
+        target_language: TargetLanguage.value,
+      });
+
+      if (response.status === 200 && response.data.status === 'success') {
+        toast.success('Code converted successfully!');
+        setConvertedCode(response.data.converted_code); // Assuming 'converted_code' is the key in response
+        setShowConvertedcodeOutput(true);
+      } else {
+        toast.error('Error converting code.');
+      }
+    } catch (error) {
+      console.error('Error converting code:', error);
+      if (error.response) {
+        console.error('Backend responded with:', error.response.data);
+        toast.error('An error occurred on the server.');
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+        toast.error('No response from the server.');
+      } else {
+        console.error('Error setting up the request:', error.message);
+        toast.error('Error in setting up the request.');
+      }
+    }
   };
 
   return (
@@ -69,10 +116,10 @@ const ProductPage = () => {
               Source Language
             </label>
             <CustomDropdown
-              selectedLanguage={SourceLanguage}
-              setSelectedLanguage={setSourceLanguage}
-              id="left-lang"
-              availableLanguages={languages}
+                selectedLanguage={SourceLanguage}
+                setSelectedLanguage={handleSourceLanguageChange}
+                id="left-lang"
+                availableLanguages={languages}
             />
           </div>
 
@@ -84,17 +131,17 @@ const ProductPage = () => {
               Target Language
             </label>
             <CustomDropdown
-              selectedLanguage={TargetLanguage}
-              setSelectedLanguage={setTargetLanguage}
-              id="right-lang"
-              availableLanguages={getRightDropdownLanguages(SourceLanguage)}
+                selectedLanguage={TargetLanguage}
+                setSelectedLanguage={handleTargetLanguageChange}
+                id="right-lang"
+                availableLanguages={getRightDropdownLanguages(SourceLanguage)}
             />
           </div>
         </div>
 
         <div className="flex justify-between mb-4">
-          <SourcecodeInput SourceLanguage={SourceLanguage} TargetLanguage={TargetLanguage} onRun={handleRunSourcecodeInput} />
-          <Convertedcode  onRun={handleRunConvertedcode} />
+          <SourcecodeInput SourceLanguage={SourceLanguage} TargetLanguage={TargetLanguage} onRunComplete={handleRunSourcecodeInput} />
+          <Convertedcode code={convertedCode} onRun={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">
@@ -104,6 +151,7 @@ const ProductPage = () => {
               isConvertDisabled ? 'bg-[#b7a8f3] cursor-not-allowed' : 'bg-[#a289ef]'
             } text-white text-lg font-medium rounded-md shadow-sm`}
             onClick={handleConvertClick}
+            disabled={isConvertDisabled}
           >
             <ChangeCircleIcon />
             Convert
@@ -111,7 +159,7 @@ const ProductPage = () => {
         </div>
 
         <div className="flex justify-between mt-8">
-          {showSourcecodeOutput && <SourcecodeOutput onOutputChange={handleOutputChange} />}
+          {showSourcecodeOutput && <SourcecodeOutput content={output} onOutputChange={handleOutputChange} />}
           {showConvertedcodeOutput && <ConvertedcodeOutput />}
         </div>
       </div>

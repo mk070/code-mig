@@ -5,8 +5,7 @@ import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
 
-export const Convertedcode = ({ onRun }) => {
-  const [code, setCode] = useState('');
+export const Convertedcode = ({ code, onRun }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
