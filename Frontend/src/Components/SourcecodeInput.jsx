@@ -170,7 +170,7 @@ const handleFileUpload = (newFiles, mainFileContent) => {
           ></textarea>
         </div>
       </div>
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-center">
         <div className="flex items-center w-1/2">
           <UploadButton onFileUpload={handleFileUpload} onGithubLinkChange={handleGithubLinkChange} />
         </div>
