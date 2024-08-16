@@ -57,8 +57,8 @@ const ProductPage = () => {
   };
 
   const handleRunConvertedcode = (output) => {
-    setOutput(output); // Capture the output from the SourcecodeInput
-    setShowSourcecodeOutput(true);
+    setConvertedCodeOutput(output); // Capture the output from the SourcecodeInput
+    setShowConvertedcodeOutput(true);
     setIsConvertDisabled(false); // Enable the Convert button after code execution
   };
 
@@ -162,7 +162,7 @@ const ProductPage = () => {
             onRunComplete={handleRunSourcecodeInput}
           />
           <Convertedcode code={convertedCode} SourceLanguage={SourceLanguage}
-            TargetLanguage={TargetLanguage} onRun={handleRunConvertedcode} />
+            TargetLanguage={TargetLanguage} onRunComplete={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">

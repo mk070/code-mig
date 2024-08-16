@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 
-export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage }) => {
+export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRunComplete }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
@@ -31,7 +31,7 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage }) =
     console.log("heloo")
     try {
       const formData = new FormData();
-  
+      console.log("TargetLanguage : ",TargetLanguage)
       // Determine the correct file extension based on SourceLanguage
       let fileExtension = '';
       switch (TargetLanguage.value.toLowerCase()) {
@@ -44,7 +44,7 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage }) =
         case 'java':
           fileExtension = 'java';
           break;
-        case 'dotnet':
+        case '.net':
           fileExtension = 'cs';
           break;
         case 'pyspark':
