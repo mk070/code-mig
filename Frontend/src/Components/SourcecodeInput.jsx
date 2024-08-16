@@ -6,9 +6,10 @@ import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-
-const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
+  
+const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
   const [code, setCode] = useState('');
+  const [filename, setFilename] = useState(''); // To store the selected file name
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
@@ -39,6 +40,16 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
   };
 
   const handleFileUpload = (newFiles) => {
+    if (newFiles.length > 0) {
+      const file = newFiles[0]; // Assume only one file is uploaded for simplicity
+      setFilename(file.name); // Store the file name
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCode(e.target.result); // Set the file content to the code editor
+      };
+      reader.readAsText(file);
+    }
     setFiles(newFiles);
   };
 
@@ -49,7 +60,14 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
   const handleRun = async () => {
     try {
       const formData = new FormData();
-      formData.append('code', code);
+
+      // If code is present, save it as a file in the backend
+      if (code.trim()) {
+        const blob = new Blob([code], { type: 'text/plain' });
+        const codeFile = new File([blob], `main.${SourceLanguage.value}`);
+        formData.append('files', codeFile);
+      }
+
       formData.append('sourcelanguage', SourceLanguage.value);
       formData.append('targetlanguage', TargetLanguage.value);
 
@@ -69,11 +87,15 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
         },
       });
 
-      if (response.status === 200) {
+      console.log('Response from backend:', response.data);
+
+      if (response.status === 200 && response.data.output) {
         toast.success('Code executed successfully!');
-        onRunComplete(response.data.output);
+        onRunComplete(response.data.output); // Pass the output to the parent component
+      } else if (response.data.error) {
+        toast.error(`Error: ${response.data.error}`);
       } else {
-        toast.error('Error executing code.');
+        toast.error('An unexpected error occurred.');
       }
     } catch (error) {
       console.error('Error running code:', error);
@@ -84,7 +106,7 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
   return (
     <div className="w-1/2 pr-2">
       <div className="flex items-center justify-between bg-gray-800 text-gray-300 px-4 py-2 rounded-t-md font-mono text-sm">
-        <span>Source Code</span>
+        <span>{filename ? `File: ${filename}` : 'Source Code'}</span> {/* Display the filename */}
         <div className="flex space-x-2">
           <button className="text-gray-400 hover:text-white">
             <MinimizeIcon fontSize="small" />

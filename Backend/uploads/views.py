@@ -1,7 +1,6 @@
 import os
 import shutil
 import stat
-import zipfile
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -22,8 +21,6 @@ def save_uploads(request):
                 main_file_name += '.cbl'
             elif main_file_name[-4:] != '.cbl' and main_file_name[-4:] == '.cob':
                 main_file_name = main_file_name[:-4] + '.cbl'
-                
-        # print(main_file_name)
 
         if single_source_code:
             if main_file_name == '':
@@ -47,7 +44,6 @@ def save_uploads(request):
 
         elif github_url:
             try:
-                # repo_path = os.path.join(settings.TEMP_FOLDER, 'github_repo')
                 Repo.clone_from(github_url, settings.TEMP_FOLDER)
 
                 convert_cob_to_cbl()
@@ -57,16 +53,13 @@ def save_uploads(request):
 
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': f'Failed to clone GitHub repo: {str(e)}'}, status=400)
-            
-        # Store main_file_name in session for future use
+
         request.session['main_file_name'] = main_file_name
 
         return JsonResponse({'status': 'success', 'message': 'Files processed successfully'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
-
-# Utility function to clean the TEMP_FOLDER
 def clean_temp_folder(temp_folder_path):
     if os.path.exists(temp_folder_path):
         def remove_readonly(func, path, _):
@@ -76,17 +69,11 @@ def clean_temp_folder(temp_folder_path):
         shutil.rmtree(temp_folder_path, onerror=remove_readonly)
     os.makedirs(temp_folder_path)
 
-
-# Function to replace .cob to .cbl
 def convert_cob_to_cbl():
     for root, dirs, files in os.walk(settings.TEMP_FOLDER):
         for filename in files:
-            # Check if the file has a .cob extension
             if filename.endswith(".cob"):
-                # Create the new filename with .cbl extension
                 new_filename = filename.replace('.cob', '.cbl')
-                # Full file paths
                 old_file = os.path.join(root, filename)
                 new_file = os.path.join(root, new_filename)
-                # Rename the file
                 os.rename(old_file, new_file)
