@@ -19,6 +19,7 @@ const ProductPage = () => {
   const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
   const [output, setOutput] = useState(''); // State to hold the output from the backend
   const [convertedCode, setConvertedCode] = useState(''); // State to hold the converted code
+  const [convertedCodeOutput, setConvertedCodeOutput] = useState(''); // State to hold the output from the converted code
 
   const getRightDropdownLanguages = (leftLang) => {
     if (leftLang.value === 'sql') {
@@ -55,8 +56,10 @@ const ProductPage = () => {
     setIsConvertDisabled(false); // Enable the Convert button after code execution
   };
 
-  const handleRunConvertedcode = () => {
-    setShowConvertedcodeOutput(true);
+  const handleRunConvertedcode = (output) => {
+    setOutput(output); // Capture the output from the SourcecodeInput
+    setShowSourcecodeOutput(true);
+    setIsConvertDisabled(false); // Enable the Convert button after code execution
   };
 
   const handleConvertClick = async () => {
@@ -158,7 +161,8 @@ const ProductPage = () => {
             TargetLanguage={TargetLanguage}
             onRunComplete={handleRunSourcecodeInput}
           />
-          <Convertedcode code={convertedCode} onRun={handleRunConvertedcode} />
+          <Convertedcode code={convertedCode} SourceLanguage={SourceLanguage}
+            TargetLanguage={TargetLanguage} onRun={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">
@@ -179,7 +183,9 @@ const ProductPage = () => {
           {showSourcecodeOutput && (
             <SourcecodeOutput content={output} onOutputChange={handleOutputChange} />
           )}
-          {showConvertedcodeOutput && <ConvertedcodeOutput />}
+          {showConvertedcodeOutput && (
+            <ConvertedcodeOutput output={convertedCodeOutput} />
+          )}
         </div>
       </div>
     </>

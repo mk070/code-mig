@@ -4,8 +4,10 @@ import MinimizeIcon from '@mui/icons-material/Minimize';
 import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
-export const Convertedcode = ({ code, onRun }) => {
+
+export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
@@ -25,19 +27,73 @@ export const Convertedcode = ({ code, onRun }) => {
     setIsButtonDisabled(code.trim().length === 0);
   }, [code]);
 
-  const handleRunClick = () => {
-    if (isButtonDisabled) {
-      toast.info('Please convert the code first.', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+  const handleRun = async () => {
+    console.log("heloo")
+    try {
+      const formData = new FormData();
+  
+      // Determine the correct file extension based on SourceLanguage
+      let fileExtension = '';
+      switch (TargetLanguage.value.toLowerCase()) {
+        case 'cobol':
+          fileExtension = 'cbl';
+          break;
+        case 'python':
+          fileExtension = 'py';
+          break;
+        case 'java':
+          fileExtension = 'java';
+          break;
+        case 'dotnet':
+          fileExtension = 'cs';
+          break;
+        case 'pyspark':
+          fileExtension = 'py';
+          break;
+        case 'sql':
+          fileExtension = 'sql';
+          break;
+        default:
+          fileExtension = 'txt'; // default if no match
+      }
+  
+      const mainFileName = `main.${fileExtension}`;
+  
+      // If code is present, save it as a file in the backend
+      if (code.trim()) {
+        const blob = new Blob([code], { type: 'text/plain' });
+        const codeFile = new File([blob], mainFileName);
+        formData.append('files', codeFile);
+      }
+  
+      formData.append('sourcelanguage', SourceLanguage.value);
+      formData.append('targetlanguage', TargetLanguage.value);
+      formData.append('main_file_name', mainFileName); // Add the main_file_name to the form data
+  
+
+      const response = await axios.post('http://127.0.0.1:8000/compile/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-    } else {
-      onRun();  // Trigger the callback to show ConvertedcodeOutput
+  
+      console.log('Response from backend:', response.data);
+  
+      if (response.status === 200 && response.data.output) {
+        toast.success('Code executed successfully!');
+        // Ensure onRunComplete is defined and passed correctly
+        if (onRunComplete) {
+          onRunComplete(response.data.output); // Pass the output to the parent component
+        }
+      } else if (response.data.error) {
+        toast.error(`Error: ${response.data.error}`);
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
+    } catch (error) {
+      console.error('Error running code:', error);
+      toast.error('An error occurred while running the code.');
+    } finally {
     }
   };
 
@@ -81,7 +137,7 @@ export const Convertedcode = ({ code, onRun }) => {
       <button
         type="button"
         className={`gap-2 flex items-center justify-center text-white text-sm mt-2 w-full p-2.5 ${isButtonDisabled ? 'bg-green-300 cursor-not-allowed' : 'bg-green-600 hover:bg-green-600'} text-sm font-medium rounded-md shadow-sm transition duration-300 ease-in-out p-2`}
-        onClick={handleRunClick}
+        onClick={handleRun}
       >
         <PlayArrowIcon />
         Run

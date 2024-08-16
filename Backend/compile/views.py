@@ -14,27 +14,31 @@ def execute_code(request):
         os.makedirs(temp_folder, exist_ok=True)
 
         cobol_file = request.FILES.get('files')
-        if not cobol_file:
-            return JsonResponse({'error': 'No COBOL file uploaded.'}, status=400)
+        source_language = request.POST.get('sourcelanguage', '').lower()
+        target_language = request.POST.get('targetlanguage', '').lower()
+
+        if not cobol_file or not source_language:
+            return JsonResponse({'error': 'No file or source language provided.'}, status=400)
 
         cobol_file_path = os.path.join(temp_folder, cobol_file.name)
-        print('cobol_file_path',cobol_file_path)
+        print('cobol_file_path:', cobol_file_path)
         with open(cobol_file_path, 'wb+') as destination:
             for chunk in cobol_file.chunks():
                 destination.write(chunk)
             destination.write(b'\n')
 
-        print('cobol_file.name : ',cobol_file.name )
-        # Set the main file name in session
+        print('cobol_file.name:', cobol_file.name)
         request.session['main_file_name'] = cobol_file.name
-        
 
         client = docker.from_env()
 
         try:
+            # Determine the command based on the selected language
+            command = f"./run.sh {source_language} data/{cobol_file.name}"
+
             container = client.containers.run(
                 image="multi-language-compiler-updated",
-                command=f"./run.sh cobol data/{cobol_file.name}",
+                command=command,
                 volumes={
                     temp_folder: {'bind': '/app/data', 'mode': 'rw'},
                     os.path.join(os.path.dirname(backend_dir), 'run.sh'): {'bind': '/app/run.sh', 'mode': 'ro'}
