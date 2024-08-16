@@ -11,14 +11,15 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const ProductPage = () => {
-  const defaultLanguage = languages[0]; // Set the first language as the default
+  const defaultLanguage = languages[0];
   const [SourceLanguage, setSourceLanguage] = useState(defaultLanguage);
   const [TargetLanguage, setTargetLanguage] = useState(defaultLanguage);
   const [isConvertDisabled, setIsConvertDisabled] = useState(true);
   const [showSourcecodeOutput, setShowSourcecodeOutput] = useState(false);
   const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
-  const [output, setOutput] = useState(''); // State to hold the output from the backend
-  const [convertedCode, setConvertedCode] = useState(''); // State to hold the converted code
+  const [output, setOutput] = useState('');
+  const [convertedCode, setConvertedCode] = useState('');
+  const [analyzerResult, setAnalyzerResult] = useState(null); // State to hold analyzer result
 
   const getRightDropdownLanguages = (leftLang) => {
     if (leftLang.value === 'sql') {
@@ -50,9 +51,9 @@ const ProductPage = () => {
   };
 
   const handleRunSourcecodeInput = (output) => {
-    setOutput(output); // Capture the output from the SourcecodeInput
+    setOutput(output);
     setShowSourcecodeOutput(true);
-    setIsConvertDisabled(false); // Enable the Convert button after code execution
+    setIsConvertDisabled(false);
   };
 
   const handleRunConvertedcode = () => {
@@ -77,12 +78,12 @@ const ProductPage = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        responseType: 'text', // Expecting plain text response
+        responseType: 'text',
       });
 
       if (response.status === 200) {
         toast.success('Code converted successfully!');
-        setConvertedCode(response.data); // Directly set the plain text response
+        setConvertedCode(response.data);
         setShowConvertedcodeOutput(true);
       } else {
         toast.error('Error converting code.');
@@ -90,13 +91,39 @@ const ProductPage = () => {
     } catch (error) {
       console.error('Error converting code:', error);
       if (error.response) {
-        console.error('Backend responded with:', error.response.data);
         toast.error('An error occurred on the server.');
       } else if (error.request) {
-        console.error('No response received:', error.request);
         toast.error('No response from the server.');
       } else {
-        console.error('Error setting up the request:', error.message);
+        toast.error('Error in setting up the request.');
+      }
+    }
+  };
+
+  const handleAnalyzerClick = async () => {
+    if (!output || !convertedCode) {
+      toast.error('Please ensure both outputs are available before analyzing.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/analyze/', {
+        source_code: output,
+        converted_code: convertedCode,
+      });
+
+      if (response.status === 200) {
+        setAnalyzerResult(response.data); // Set the result from the API
+      } else {
+        toast.error('Error analyzing code.');
+      }
+    } catch (error) {
+      console.error('Error analyzing code:', error);
+      if (error.response) {
+        toast.error('An error occurred on the server.');
+      } else if (error.request) {
+        toast.error('No response from the server.');
+      } else {
         toast.error('Error in setting up the request.');
       }
     }
@@ -110,8 +137,8 @@ const ProductPage = () => {
           <h1
             className="text-4xl font-bold tracking-tight"
             style={{
-              color: "#2D3748", // Dark gray for a strong, professional appearance
-              textShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", // Very subtle shadow to add depth
+              color: "#2D3748",
+              textShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
               lineHeight: "1.2",
             }}
           >
@@ -181,6 +208,23 @@ const ProductPage = () => {
           )}
           {showConvertedcodeOutput && <ConvertedcodeOutput />}
         </div>
+        {output && (
+          <div className="mt-8 flex justify-center">
+              <button
+                type='button'
+                className='p-3 w-1/3 justify-center gap-2 items-center flex bg-gray-500 text-white text-lg font-medium rounded-md shadow-sm'
+                onClick={handleAnalyzerClick}
+              >
+                Analyzer
+              </button>
+          </div>
+        )
+        }
+        {analyzerResult && (
+          <div className="mt-4 text-center text-lg font-medium">
+            Analysis Result: {analyzerResult}
+          </div>
+        )}
       </div>
     </>
   );
