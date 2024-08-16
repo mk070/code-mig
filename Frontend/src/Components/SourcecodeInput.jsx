@@ -39,19 +39,25 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
     }
   };
 
-  const handleFileUpload = (newFiles) => {
-    if (newFiles.length > 0) {
-      const file = newFiles[0]; // Assume only one file is uploaded for simplicity
-      setFilename(file.name); // Store the file name
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCode(e.target.result); // Set the file content to the code editor
-      };
-      reader.readAsText(file);
-    }
-    setFiles(newFiles);
-  };
+const handleFileUpload = (newFiles, mainFileContent) => {
+  if (newFiles.length > 0) {
+    const file = newFiles[0]; // Assume only one file is uploaded for simplicity
+    setFilename(file.name); // Store the file name
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setCode(e.target.result); // Set the file content to the code editor
+    };
+    reader.readAsText(file);
+  }
+
+  setFiles(newFiles);
+  if (mainFileContent) {
+    setCode(mainFileContent);
+  }
+};
+
 
   const handleGithubLinkChange = (link) => {
     setGithubLink(link);
@@ -61,35 +67,35 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
     try {
       const formData = new FormData();
 
-      // If code is present, save it as a file in the backend
+      if (files.length === 0) {
+        formData.append('code', code);
       if (code.trim()) {
         const blob = new Blob([code], { type: 'text/plain' });
         const codeFile = new File([blob], `main.${SourceLanguage.value}`);
         formData.append('files', codeFile);
       }
+      } else {
+        setCode(''); 
+      }  
 
       formData.append('sourcelanguage', SourceLanguage.value);
       formData.append('targetlanguage', TargetLanguage.value);
-
       if (githubLink) {
         formData.append('github_link', githubLink);
       }
-
       if (files.length > 0) {
         files.forEach((file) => {
           formData.append('files', file);
         });
       }
-
       const response = await axios.post('http://127.0.0.1:8000/compile/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      console.log('Response from backend:', response.data);
+      if (response.status === 200) {
 
-      if (response.status === 200 && response.data.output) {
         toast.success('Code executed successfully!');
         onRunComplete(response.data.output); // Pass the output to the parent component
       } else if (response.data.error) {
@@ -100,6 +106,8 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
     } catch (error) {
       console.error('Error running code:', error);
       toast.error('An error occurred while running the code.');
+    } finally {
+      setFiles([]); 
     }
   };
 
