@@ -2,6 +2,9 @@ from .languages import get_file_extension
 
 # Conversion Prompt
 def conversion_prompt(source_file_data, source_language, target_language):
+    print("source_file_data /prompt.py : ",source_file_data)
+    print("source_language /prompt.py : ",source_language)
+    print("target_language /prompt.py : ",target_language)
     target_ext = get_file_extension(target_language)
     prompt = f"""
 You are an advanced AI specializing in code conversion. Your task is to convert multiple {source_language} source files to the {target_language} language while preserving their functionality and structure. The source files are provided in a dictionary format where the 'code' key contains the COBOL source files, and each key represents a filename with its corresponding code. The 'external_files' key lists the associated external files such as datasets and database files, but you do not need to include these in your output.

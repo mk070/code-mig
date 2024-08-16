@@ -4,7 +4,7 @@ export const Navbar = () => {
   return (
     <header className=" ">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Data X</h1>
+          <h1 className="text-2xl font-bold text-gray-900">DATA X</h1>
           <nav>
             <ul className="flex space-x-4">
               <li><a href="/" className="text-black hover:text-blue-500">Home</a></li>

@@ -60,35 +60,63 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
   const handleRun = async () => {
     try {
       const formData = new FormData();
-
+  
+      // Determine the correct file extension based on SourceLanguage
+      let fileExtension = '';
+      let mainFileName = `main.${fileExtension}`;
+      switch (SourceLanguage.value.toLowerCase()) {
+        case 'cobol':
+          fileExtension = 'cbl';
+          break;
+        case 'python':
+          fileExtension = 'py';
+          break;
+        case 'java':
+          fileExtension = 'java';
+          break;
+        case 'dotnet':
+          fileExtension = 'cs';
+          break;
+        case 'pyspark':
+          fileExtension = 'py';
+          break;
+        case 'sql':
+          fileExtension = 'sql';
+          break;
+        default:
+          fileExtension = 'txt'; // default if no match
+      }
+  
       // If code is present, save it as a file in the backend
       if (code.trim()) {
+        mainFileName = `main.${fileExtension}`;
         const blob = new Blob([code], { type: 'text/plain' });
-        const codeFile = new File([blob], `main.${SourceLanguage.value}`);
+        const codeFile = new File([blob], mainFileName);
         formData.append('files', codeFile);
       }
-
+  
       formData.append('sourcelanguage', SourceLanguage.value);
       formData.append('targetlanguage', TargetLanguage.value);
-
+      formData.append('main_file_name', mainFileName); // Add the main_file_name to the form data
+  
       if (githubLink) {
         formData.append('github_link', githubLink);
       }
-
+  
       if (files.length > 0) {
         files.forEach((file) => {
           formData.append('files', file);
         });
       }
-
+  
       const response = await axios.post('http://127.0.0.1:8000/compile/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+  
       console.log('Response from backend:', response.data);
-
+  
       if (response.status === 200 && response.data.output) {
         toast.success('Code executed successfully!');
         onRunComplete(response.data.output); // Pass the output to the parent component
@@ -102,6 +130,7 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
       toast.error('An error occurred while running the code.');
     }
   };
+    
 
   return (
     <div className="w-1/2 pr-2">

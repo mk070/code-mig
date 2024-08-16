@@ -68,11 +68,15 @@ const ProductPage = () => {
     console.log("Source Language:", SourceLanguage.value);
     console.log("Target Language:", TargetLanguage.value);
     
+    const formData = new FormData();
+    formData.append('source_language', SourceLanguage.value);
+    formData.append('target_language', TargetLanguage.value);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/conversion/', {
-        source_language: SourceLanguage.value,
-        target_language: TargetLanguage.value,
+      const response = await axios.post('http://127.0.0.1:8000/conversion/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (response.status === 200 && response.data.status === 'success') {
@@ -95,17 +99,30 @@ const ProductPage = () => {
         toast.error('Error in setting up the request.');
       }
     }
-  };
+};
 
   return (
     <>
       <Navbar />
       <div className="container mx-auto px-24 py-4">
-        <div className="flex flex-col items-center justify-center h-8 py-4 mb-16 my-8 w-full">
-          <h1 className="text-3xl shadow-2xl drop-shadow-xl">
-            Start Converting Your Legacy code
-          </h1>
-        </div>
+      <div className="flex flex-col items-center justify-center h-8 py-4 mb-16 my-8 w-full">
+  <h1
+    className="text-4xl font-bold tracking-tight"
+    style={{
+      color: "#2D3748", // Dark gray for a strong, professional appearance
+      textShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)", // Very subtle shadow to add depth
+      lineHeight: "1.2",
+    }}
+  >
+    Start Converting Your Legacy Code
+  </h1>
+</div>
+
+
+
+
+
+
         {/* language */}
         <div className="flex justify-between mb-4">
           <div className="w-1/2 pr-2">

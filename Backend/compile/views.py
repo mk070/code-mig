@@ -9,10 +9,6 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 def execute_code(request):
     if request.method == 'POST':
-        logger.info("Received request to execute code")
-        logger.info(f"Request POST data: {request.POST}")
-        logger.info(f"Request FILES: {request.FILES}")
-
         backend_dir = os.path.dirname(__file__)
         temp_folder = os.path.join(os.path.dirname(backend_dir), 'TEMP_FOLDER')
         os.makedirs(temp_folder, exist_ok=True)
@@ -22,10 +18,16 @@ def execute_code(request):
             return JsonResponse({'error': 'No COBOL file uploaded.'}, status=400)
 
         cobol_file_path = os.path.join(temp_folder, cobol_file.name)
+        print('cobol_file_path',cobol_file_path)
         with open(cobol_file_path, 'wb+') as destination:
             for chunk in cobol_file.chunks():
                 destination.write(chunk)
             destination.write(b'\n')
+
+        print('cobol_file.name : ',cobol_file.name )
+        # Set the main file name in session
+        request.session['main_file_name'] = cobol_file.name
+        
 
         client = docker.from_env()
 
@@ -43,9 +45,9 @@ def execute_code(request):
                 stderr=True
             )
             output = container.decode('utf-8')
-            print(f"Container output: {output}")  # Print the output to the console for debugging
+            print(f"Container output: {output}")
 
-            return JsonResponse({'output': container.decode('utf-8')})
+            return JsonResponse({'output': output})
 
         except docker.errors.ContainerError as e:
             logger.error(f"Container error: {str(e)}")
@@ -56,6 +58,5 @@ def execute_code(request):
         except docker.errors.APIError as e:
             logger.error(f"Docker API error: {str(e)}")
             return JsonResponse({'error': f"Docker API error: {str(e)}"}, status=500)
-        
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
