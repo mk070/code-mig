@@ -1,56 +1,78 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. CONDITIONALS.
+       PROGRAM-ID. DisplayIntegers.
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
 
-       01 NUM1 PIC 9(9).
-       01 NUM2 PIC 9(9).
-       01 NUM3 PIC 9(5).
-       01 NUM4 PIC 9(6).
 
-       01 NEG-NUM PIC S9(9) VALUE -1234.
-       01 CLASS1 PIC X(9) VALUE 'ABCD '.
-       01 CHECK-VAL PIC 9(3).
-       88 PASS VALUES ARE 041 THRU 100.
-       88 FAIL VALUES ARE 000 THRU 040.
+       01  NAME-ABOVE-100       PIC X(30) VALUE 'Rahul'.
+       01  NAME-ABOVE-200       PIC X(30) VALUE 'Sita'.
+       01  NAME-ABOVE-300       PIC X(30) VALUE 'Amit'.
+       01  NAME-ABOVE-400       PIC X(30) VALUE 'Nita'.
+       01  NAME-ABOVE-500       PIC X(30) VALUE 'Raj'.
+       01  INTEGER-VALUE-1      PIC 9(3) VALUE 100.
+       01  INTEGER-VALUE-2      PIC 9(3) VALUE 200.
+       01  INTEGER-VALUE-3      PIC 9(3) VALUE 300.
+       01  INTEGER-VALUE-4      PIC 9(3) VALUE 400.
+       01  INTEGER-VALUE-5      PIC 9(3) VALUE 500.
 
        PROCEDURE DIVISION.
-       MOVE 25 TO NUM1.
-       MOVE 25 TO NUM3.
-       MOVE 15 TO NUM2.
-       MOVE 15 TO NUM4.
 
-       IF NUM1 > NUM2 THEN
-           DISPLAY 'IN LOOP 1 - IF BLOCK'
-           IF NUM3 = NUM4 THEN
-               DISPLAY 'IN LOOP 2 - IF BLOCK'
-           ELSE
-               DISPLAY 'IN LOOP 2 - ELSE BLOCK'
+
+           DISPLAY "Names with values greater than 100:"
+           IF INTEGER-VALUE-1 > 100
+               DISPLAY NAME-ABOVE-100
            END-IF
-       ELSE
-           DISPLAY 'IN LOOP 1 - ELSE BLOCK'
-       END-IF.
-
-       MOVE 65 TO CHECK-VAL.
-       IF PASS THEN
-           DISPLAY 'PASSED WITH ' CHECK-VAL ' MARKS.'
-       ELSE
-           IF FAIL THEN
-               DISPLAY 'FAILED WITH ' CHECK-VAL ' MARKS.'
+           IF INTEGER-VALUE-2 > 100
+               DISPLAY NAME-ABOVE-200
            END-IF
-       END-IF.
+           IF INTEGER-VALUE-3 > 100
+               DISPLAY NAME-ABOVE-300
+           END-IF
+           IF INTEGER-VALUE-4 > 100
+               DISPLAY NAME-ABOVE-400
+           END-IF
+           IF INTEGER-VALUE-5 > 100
+               DISPLAY NAME-ABOVE-500
+           END-IF
 
-       EVALUATE TRUE
-           WHEN NUM1 < 2
-               DISPLAY 'NUM1 LESS THAN 2'
-           WHEN NUM1 < 19
-               DISPLAY 'NUM1 LESS THAN 19'
-           WHEN NUM1 < 1000
-               DISPLAY 'NUM1 LESS THAN 1000'
-           WHEN OTHER
-               DISPLAY 'NUM1 DOES NOT MEET ANY CONDITION'
-       END-EVALUATE.
+           DISPLAY "Names with values greater than 200:"
+           IF INTEGER-VALUE-2 > 200
+               DISPLAY NAME-ABOVE-200
+           END-IF
+           IF INTEGER-VALUE-3 > 200
+               DISPLAY NAME-ABOVE-300
+           END-IF
+           IF INTEGER-VALUE-4 > 200
+               DISPLAY NAME-ABOVE-400
+           END-IF
+           IF INTEGER-VALUE-5 > 200
+               DISPLAY NAME-ABOVE-500
+           END-IF
 
-       STOP RUN.
+           DISPLAY "Names with values greater than 300:"
+           IF INTEGER-VALUE-3 > 300
+               DISPLAY NAME-ABOVE-300
+           END-IF
+           IF INTEGER-VALUE-4 > 300
+               DISPLAY NAME-ABOVE-400
+           END-IF
+           IF INTEGER-VALUE-5 > 300
+               DISPLAY NAME-ABOVE-500
+           END-IF
+
+           DISPLAY "Names with values greater than 400:"
+           IF INTEGER-VALUE-4 > 400
+               DISPLAY NAME-ABOVE-400
+           END-IF
+           IF INTEGER-VALUE-5 > 400
+               DISPLAY NAME-ABOVE-500
+           END-IF
+
+           DISPLAY "Names with values greater than 500:"
+           IF INTEGER-VALUE-5 > 500
+               DISPLAY NAME-ABOVE-500
+           END-IF
+
+           STOP RUN.
 

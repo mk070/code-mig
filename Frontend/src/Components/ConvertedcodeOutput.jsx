@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ConvertedcodeOutput = () => {
+const ConvertedcodeOutput = ({ output }) => {
   return (
     <div className="w-1/2 pl-2">
       <label
@@ -14,6 +14,7 @@ const ConvertedcodeOutput = () => {
         rows="10"
         className="w-full p-2.5 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-black text-green-400 font-mono"
         placeholder="Output will appear here..."
+        value={output}
         readOnly
       ></textarea>
     </div>

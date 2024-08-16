@@ -59,7 +59,6 @@ const handleFileUpload = (newFiles, mainFileContent) => {
   
       // Determine the correct file extension based on SourceLanguage
       let fileExtension = '';
-      let mainFileName = `main.${fileExtension}`;
       switch (SourceLanguage.value.toLowerCase()) {
         case 'cobol':
           fileExtension = 'cbl';
@@ -83,9 +82,10 @@ const handleFileUpload = (newFiles, mainFileContent) => {
           fileExtension = 'txt'; // default if no match
       }
   
+      const mainFileName = `main.${fileExtension}`;
+  
       // If code is present, save it as a file in the backend
       if (code.trim()) {
-        mainFileName = `main.${fileExtension}`;
         const blob = new Blob([code], { type: 'text/plain' });
         const codeFile = new File([blob], mainFileName);
         formData.append('files', codeFile);
@@ -115,7 +115,10 @@ const handleFileUpload = (newFiles, mainFileContent) => {
   
       if (response.status === 200 && response.data.output) {
         toast.success('Code executed successfully!');
-        onRunComplete(response.data.output); // Pass the output to the parent component
+        // Ensure onRunComplete is defined and passed correctly
+        if (onRunComplete) {
+          onRunComplete(response.data.output); // Pass the output to the parent component
+        }
       } else if (response.data.error) {
         toast.error(`Error: ${response.data.error}`);
       } else {
@@ -128,7 +131,7 @@ const handleFileUpload = (newFiles, mainFileContent) => {
       setFiles([]); 
     }
   };
-    
+      
 
   return (
     <div className="w-1/2 pr-2">

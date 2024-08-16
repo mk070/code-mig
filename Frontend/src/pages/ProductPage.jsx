@@ -17,9 +17,12 @@ const ProductPage = () => {
   const [isConvertDisabled, setIsConvertDisabled] = useState(true);
   const [showSourcecodeOutput, setShowSourcecodeOutput] = useState(false);
   const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
+
   const [output, setOutput] = useState('');
   const [convertedCode, setConvertedCode] = useState('');
-  const [analyzerResult, setAnalyzerResult] = useState(null); // State to hold analyzer result
+  const [analyzerResult, setAnalyzerResult] = useState(null);
+  const [convertedCodeOutput, setConvertedCodeOutput] = useState(''); 
+
 
   const getRightDropdownLanguages = (leftLang) => {
     if (leftLang.value === 'sql') {
@@ -56,8 +59,10 @@ const ProductPage = () => {
     setIsConvertDisabled(false);
   };
 
-  const handleRunConvertedcode = () => {
+  const handleRunConvertedcode = (output) => {
+    setConvertedCodeOutput(output); // Capture the output from the SourcecodeInput
     setShowConvertedcodeOutput(true);
+    setIsConvertDisabled(false); // Enable the Convert button after code execution
   };
 
   const handleConvertClick = async () => {
@@ -185,7 +190,8 @@ const ProductPage = () => {
             TargetLanguage={TargetLanguage}
             onRunComplete={handleRunSourcecodeInput}
           />
-          <Convertedcode code={convertedCode} onRun={handleRunConvertedcode} />
+          <Convertedcode code={convertedCode} SourceLanguage={SourceLanguage}
+            TargetLanguage={TargetLanguage} onRunComplete={handleRunConvertedcode} />
         </div>
 
         <div className="mt-8 flex justify-center">
@@ -206,7 +212,9 @@ const ProductPage = () => {
           {showSourcecodeOutput && (
             <SourcecodeOutput content={output} onOutputChange={handleOutputChange} />
           )}
-          {showConvertedcodeOutput && <ConvertedcodeOutput />}
+          {showConvertedcodeOutput && (
+            <ConvertedcodeOutput output={convertedCodeOutput} />
+          )}
         </div>
         {output && (
           <div className="mt-8 flex justify-center">
