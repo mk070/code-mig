@@ -39,19 +39,25 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
     }
   };
 
-  const handleFileUpload = (newFiles) => {
-    if (newFiles.length > 0) {
-      const file = newFiles[0]; // Assume only one file is uploaded for simplicity
-      setFilename(file.name); // Store the file name
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setCode(e.target.result); // Set the file content to the code editor
-      };
-      reader.readAsText(file);
-    }
-    setFiles(newFiles);
-  };
+const handleFileUpload = (newFiles, mainFileContent) => {
+  if (newFiles.length > 0) {
+    const file = newFiles[0]; // Assume only one file is uploaded for simplicity
+    setFilename(file.name); // Store the file name
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setCode(e.target.result); // Set the file content to the code editor
+    };
+    reader.readAsText(file);
+  }
+
+  setFiles(newFiles);
+  if (mainFileContent) {
+    setCode(mainFileContent);
+  }
+};
+
 
   const handleGithubLinkChange = (link) => {
     setGithubLink(link);
@@ -128,6 +134,8 @@ const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
     } catch (error) {
       console.error('Error running code:', error);
       toast.error('An error occurred while running the code.');
+    } finally {
+      setFiles([]); 
     }
   };
     
