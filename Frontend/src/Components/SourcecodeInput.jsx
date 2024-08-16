@@ -38,8 +38,12 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
     }
   };
 
-  const handleFileUpload = (newFiles) => {
+  const handleFileUpload = (newFiles, mainFileContent) => {
+    console.log(newFiles);
     setFiles(newFiles);
+    if (mainFileContent) {
+      setCode(mainFileContent);
+    }
   };
 
   const handleGithubLinkChange = (link) => {
@@ -49,26 +53,26 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
   const handleRun = async () => {
     try {
       const formData = new FormData();
-      formData.append('code', code);
+      if (files.length === 0) {
+        formData.append('code', code);
+      } else {
+        setCode(''); 
+      }  
       formData.append('sourcelanguage', SourceLanguage.value);
       formData.append('targetlanguage', TargetLanguage.value);
-
       if (githubLink) {
         formData.append('github_link', githubLink);
       }
-
       if (files.length > 0) {
         files.forEach((file) => {
           formData.append('files', file);
         });
       }
-
       const response = await axios.post('http://127.0.0.1:8000/compile/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
       if (response.status === 200) {
         toast.success('Code executed successfully!');
         onRunComplete(response.data.output);
@@ -78,6 +82,8 @@ const SourcecodeInput = ({ onRunComplete, SourceLanguage, TargetLanguage }) => {
     } catch (error) {
       console.error('Error running code:', error);
       toast.error('An error occurred while running the code.');
+    } finally {
+      setFiles([]); 
     }
   };
 
