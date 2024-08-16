@@ -1,20 +1,7 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. MAINPROG.
-
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       01  WS-NAME PIC X(30).
-       01  WS-SALARY PIC 9(5)V99.
-       01  WS-DEPARTMENT PIC X(20).
-
+       PROGRAM-ID. HelloWorld.
        PROCEDURE DIVISION.
-           MOVE 'John Doe' TO WS-NAME
-           MOVE 50000.00 TO WS-SALARY
-           MOVE 'Engineering' TO WS-DEPARTMENT
-
-           CALL 'emp' USING WS-NAME WS-SALARY WS-DEPARTMENT
-           CALL 'calc' USING WS-SALARY RETURNING WS-SALARY
-      *    CALL 'UPDATE-DEPARTMENT' USING WS-DEPARTMENT
-
-           STOP RUN.
+       DISPLAY 'Hello, COBOL World!'.
+       STOP RUN.
+       
 
