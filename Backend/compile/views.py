@@ -13,36 +13,48 @@ def execute_code(request):
         temp_folder = os.path.join(os.path.dirname(backend_dir), 'TEMP_FOLDER')
         os.makedirs(temp_folder, exist_ok=True)
 
-        cobol_file = request.FILES.get('files')
+        files = request.FILES.getlist('files')
         source_language = request.POST.get('sourcelanguage', '').lower()
+        main_file_name = request.POST.get('main_file_name', '').strip()
 
-        if not cobol_file or not source_language:
-            return JsonResponse({'error': 'No file or source language provided.'}, status=400)
+        if not files or not source_language or not main_file_name:
+            return JsonResponse({'error': 'No files, source language, or main file name provided.'}, status=400)
 
-        cobol_file_path = os.path.join(temp_folder, cobol_file.name)
-        print('cobol_file_path:', cobol_file_path)
-        with open(cobol_file_path, 'wb+') as destination:
-            for chunk in cobol_file.chunks():
-                destination.write(chunk)
-            destination.write(b'\n')
+        # Save all uploaded files
+        saved_files = []
+        for file in files:
+            file_path = os.path.join(temp_folder, file.name)
+            with open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+            saved_files.append(file_path)
+            
+        print("saved_files : ",saved_files)
 
-        print('cobol_file.name:', cobol_file.name)
-        request.session['main_file_name'] = cobol_file.name
+        # Verify that the main file exists
+        main_file_path = os.path.join(temp_folder, main_file_name)
+        if main_file_path not in saved_files:
+            return JsonResponse({'error': f'Main file "{main_file_name}" not found in uploaded files.'}, status=400)
+
+        request.session['main_file_name'] = main_file_name
 
         client = docker.from_env()
 
         try:
-            # Correctly form the command based on the file extension or source language
-            if cobol_file.name.endswith('.cbl'):
-                command = f"./run.sh cobol data/{cobol_file.name}"
-            elif cobol_file.name.endswith('.py'):
-                command = f"./run.sh python data/{cobol_file.name}"
-            elif cobol_file.name.endswith('.java'):
-                command = f"./run.sh java data/{cobol_file.name}"
-            elif cobol_file.name.endswith('.cs'):
-                command = f"./run.sh dotnet data/{cobol_file.name}"
+            # Form the command based on the file extension or source language
+            if source_language == 'cobol':
+                command = f"./run.sh cobol data/{main_file_name}"
+                for file_path in saved_files:
+                    if file_path != main_file_path:
+                        command += f" {os.path.basename(file_path)}"
+            elif source_language == 'python':
+                command = f"./run.sh python data/{main_file_name}"
+            elif source_language == 'java':
+                command = f"./run.sh java data/{main_file_name}"
+            elif source_language == 'dotnet':
+                command = f"./run.sh dotnet data/{main_file_name}"
             else:
-                command = f"./run.sh {source_language} data/{cobol_file.name}"
+                command = f"./run.sh {source_language} data/{main_file_name}"
 
             container = client.containers.run(
                 image="multi-language-compiler-updated",
@@ -84,5 +96,5 @@ def extract_relevant_output(output):
     """
     lines = output.splitlines()
     # Example: Keep only the last 5 lines
-    relevant_lines = lines[1:] if len(lines) > 1 else lines
+    relevant_lines = lines[-5:] if len(lines) > 5 else lines
     return '\n'.join(relevant_lines)

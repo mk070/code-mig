@@ -1,0 +1,14 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. emp.
+
+       DATA DIVISION.
+       LINKAGE SECTION.
+       01  LS-NAME PIC X(30).
+       01  LS-SALARY PIC 9(5)V99.
+       01  LS-DEPARTMENT PIC X(20).
+
+       PROCEDURE DIVISION USING LS-NAME LS-SALARY LS-DEPARTMENT.
+           DISPLAY 'Employee Name: ' LS-NAME
+           DISPLAY 'Salary: ' LS-SALARY
+           DISPLAY 'Department: ' LS-DEPARTMENT
+           EXIT PROGRAM.
