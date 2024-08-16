@@ -17,10 +17,10 @@ def execute_code(request):
         source_language = request.POST.get('sourcelanguage', '').lower()
         main_file_name = request.POST.get('main_file_name', '').strip()
 
-        if not files or not source_language or not main_file_name:
+        if not files   or not main_file_name:
             return JsonResponse({'error': 'No files, source language, or main file name provided.'}, status=400)
 
-        # Save all uploaded files to TEMP_FOLDER
+                     # Save all uploaded files to TEMP_FOLDER
         saved_files = []
         for file in files:
             file_path = os.path.join(temp_folder, file.name)
@@ -28,6 +28,8 @@ def execute_code(request):
                 for chunk in file.chunks():
                     destination.write(chunk)
             saved_files.append(file.name)
+
+
 
         
 
@@ -40,20 +42,21 @@ def execute_code(request):
         client = docker.from_env()
 
         try:
-            # Form the command based on the source language and the list of uploaded files
-            if source_language == 'cobol':
+# Determine the language based on the main file extension
+            file_extension = os.path.splitext(main_file_name)[1].lower()
+
+            if file_extension == '.cbl':
                 subprograms = [f"data/{file}" for file in saved_files if file != main_file_name]
                 command = f"./run.sh cobol data/{main_file_name} {' '.join(subprograms)}"
-
-            elif source_language == 'python':
+            elif file_extension == '.py':
                 command = f"./run.sh python data/{main_file_name}"
-            elif source_language == 'java':
+            elif file_extension == '.java':
                 command = f"./run.sh java data/{main_file_name}"
-            elif source_language == 'dotnet':
+            elif file_extension == '.cs':
                 command = f"./run.sh dotnet data/{main_file_name}"
             else:
-                command = f"./run.sh {source_language} data/{main_file_name}"
-
+                return JsonResponse({'error': f'Unsupported file extension: {file_extension}'}, status=400)
+            
             container = client.containers.run(
                 image="multi-language-compiler-updated",
                 command=command,
