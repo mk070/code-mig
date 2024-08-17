@@ -204,8 +204,11 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
                     </p>
                     <div className="max-h-[80px] overflow-y-auto mb-4">
                       <ul>
-                        {files
-                          .filter(file => file !== selectedMainFile) // Exclude the main file
+                        {files 
+                          .filter(file => 
+                            file !== selectedMainFile && 
+                            (file.name.endsWith('.sql') || file.name.endsWith('.db') || file.name.endsWith('.mdb'))
+                          ) // Exclude the main file and show only database files
                           .map((file, index) => (
                             <li
                               key={index}
@@ -221,6 +224,7 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
                     </div>
                   </>
                 )}
+
               </>
             )}
           </>

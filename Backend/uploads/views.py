@@ -16,6 +16,8 @@ def save_uploads(request):
         github_url = request.POST.get('github_url', '').strip()
         main_file_name = request.POST.get('main_file_name', '').strip()
         database_file_name = request.POST.get('database_file_name', '').strip()
+
+
         print('from frontend - main_file_name : ',main_file_name)
 
         if main_file_name:

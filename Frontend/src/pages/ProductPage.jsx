@@ -216,23 +216,7 @@ const ProductPage = () => {
             <ConvertedcodeOutput output={convertedCodeOutput} />
           )}
         </div>
-        {output && (
-          <div className="mt-8 flex justify-center">
-              <button
-                type='button'
-                className='p-3 w-1/3 justify-center gap-2 items-center flex bg-gray-500 text-white text-lg font-medium rounded-md shadow-sm'
-                onClick={handleAnalyzerClick}
-              >
-                Analyzer
-              </button>
-          </div>
-        )
-        }
-        {analyzerResult && (
-          <div className="mt-4 text-center text-lg font-medium">
-            Analysis Result: {analyzerResult}
-          </div>
-        )}
+      
       </div>
     </>
   );

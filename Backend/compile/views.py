@@ -1,14 +1,20 @@
 import logging
 import docker
 from django.http import JsonResponse
+from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import os
+import shutil
+import stat
 
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def execute_code(request):
+
     if request.method == 'POST':
+        clean_temp_folder(settings.TEMP_FOLDER)
+
         backend_dir = os.path.dirname(__file__)
         temp_folder = os.path.join(os.path.dirname(backend_dir), 'TEMP_FOLDER')
         os.makedirs(temp_folder, exist_ok=True)
@@ -28,10 +34,6 @@ def execute_code(request):
                 for chunk in file.chunks():
                     destination.write(chunk)
             saved_files.append(file.name)
-
-
-
-        
 
         # Ensure main_file_name is in the saved files
         if main_file_name not in saved_files:
@@ -99,3 +101,13 @@ def extract_relevant_output(output):
     # Example: Keep only the last 5 lines
     relevant_lines = lines[-5:] if len(lines) > 5 else lines
     return '\n'.join(relevant_lines)
+
+def clean_temp_folder(temp_folder_path):
+    if os.path.exists(temp_folder_path):
+        def remove_readonly(func, path, _):
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        
+        shutil.rmtree(temp_folder_path, onerror=remove_readonly)
+    os.makedirs(temp_folder_path)
+
