@@ -9,6 +9,7 @@ import axios from 'axios';
   
 const SourcecodeInput = ({  SourceLanguage, TargetLanguage ,onRunComplete}) => {
   const [code, setCode] = useState('');
+  const [MainFile,setMainFile] = useState('')
   const [filename, setFilename] = useState(''); // To store the selected file name
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
@@ -52,11 +53,15 @@ const handleFileUpload = (newFiles, mainFileContent) => {
   const handleGithubLinkChange = (link) => {
     setGithubLink(link);
   };
+  const handleMainFile = (name) =>{
+    setMainFile(name) 
+  }
 
   const handleRun = async () => {
     try {
       const formData = new FormData();
-  
+
+     
       // Determine the correct file extension based on SourceLanguage
       let fileExtension = '';
       switch (SourceLanguage.value.toLowerCase()) {
@@ -81,19 +86,27 @@ const handleFileUpload = (newFiles, mainFileContent) => {
         default:
           fileExtension = 'txt'; // default if no match
       }
-  
-      const mainFileName = `main.${fileExtension}`;
-  
+      const database_file_name = ''
+      
       // If code is present, save it as a file in the backend
-      if (code.trim()) {
-        const blob = new Blob([code], { type: 'text/plain' });
-        const codeFile = new File([blob], mainFileName);
-        formData.append('files', codeFile);
+      let mainFileName = ''
+      if (files.length === 0) {
+         mainFileName = `main.${fileExtension}`;
+        if (code.trim()) {
+          const blob = new Blob([code], { type: 'text/plain' });
+          const codeFile = new File([blob], mainFileName);
+          formData.append('files', codeFile);
+        }      
+      } else {
+        mainFileName = MainFile
+        formData.append('files', null);
       }
-  
+
+      
       formData.append('sourcelanguage', SourceLanguage.value);
       formData.append('targetlanguage', TargetLanguage.value);
       formData.append('main_file_name', mainFileName); // Add the main_file_name to the form data
+      formData.append('database_file_name', database_file_name); // Add the main_file_name to the form data
   
       if (githubLink) {
         formData.append('github_link', githubLink);
@@ -172,7 +185,7 @@ const handleFileUpload = (newFiles, mainFileContent) => {
       </div>
       <div className="mt-2 flex items-center justify-center">
         <div className="flex items-center w-1/2">
-          <UploadButton onFileUpload={handleFileUpload} onGithubLinkChange={handleGithubLinkChange} />
+          <UploadButton onFileUpload={handleFileUpload} MainFile={handleMainFile} onGithubLinkChange={handleGithubLinkChange} />
         </div>
         <button
           type="button"

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import UploadIcon from '@mui/icons-material/Upload';
 import FileUploadPopup from './FileUploadPopup';
 
-const UploadButton = ({ onFileUpload, onGithubLinkChange }) => {
+const UploadButton = ({ onFileUpload, onGithubLinkChange,MainFile }) => {
   const [openPopup, setOpenPopup] = useState(false);
 
   const handleButtonClick = () => {
@@ -26,6 +26,7 @@ const UploadButton = ({ onFileUpload, onGithubLinkChange }) => {
           onClose={handleClosePopup}
           onFileUpload={onFileUpload}
           onGithubLinkChange={onGithubLinkChange}
+          MainFile={MainFile}
         />
       )}
     </>

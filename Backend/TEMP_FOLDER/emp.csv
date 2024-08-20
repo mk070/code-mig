@@ -1,0 +1,50 @@
+ENAME1,10,HR,5000,1985,New York,Male,Senior,Manager,YES
+ENAME2,20,Finance,6000,1990,Chicago,Female,Junior,Analyst,NO
+ENAME3,30,IT,7000,1988,Los Angeles,Male,Mid,Engineer,YES
+ENAME4,40,Sales,8000,1992,Houston,Female,Senior,Executive,YES
+ENAME5,10,HR,5200,1987,New York,Female,Junior,Clerk,NO
+ENAME6,20,Finance,6100,1991,Chicago,Male,Senior,Accountant,YES
+ENAME7,30,IT,7100,1989,Los Angeles,Female,Mid,Developer,NO
+ENAME8,40,Sales,8100,1993,Houston,Male,Junior,Salesperson,YES
+ENAME9,10,HR,5300,1986,New York,Female,Mid,HR Executive,NO
+ENAME10,20,Finance,6200,1990,Chicago,Male,Junior,Clerk,YES
+ENAME11,30,IT,7200,1991,Los Angeles,Male,Senior,System Admin,NO
+ENAME12,40,Sales,8200,1994,Houston,Female,Senior,Manager,YES
+ENAME13,10,HR,5400,1987,New York,Male,Junior,Assistant,NO
+ENAME14,20,Finance,6300,1989,Chicago,Female,Mid,Analyst,YES
+ENAME15,30,IT,7300,1990,Los Angeles,Female,Junior,Tester,NO
+ENAME16,40,Sales,8400,1995,Houston,Male,Senior,Executive,YES
+ENAME17,10,HR,5500,1988,New York,Female,Senior,Manager,YES
+ENAME18,20,Finance,6400,1991,Chicago,Male,Mid,Analyst,NO
+ENAME19,30,IT,7400,1992,Los Angeles,Female,Junior,Support,YES
+ENAME20,40,Sales,8500,1996,Houston,Male,Senior,Sales Lead,YES
+ENAME21,10,HR,5600,1989,New York,Female,Mid,HR Lead,NO
+ENAME22,20,Finance,6500,1992,Chicago,Male,Junior,Accountant,YES
+ENAME23,30,IT,7500,1993,Los Angeles,Female,Mid,Engineer,NO
+ENAME24,40,Sales,8600,1997,Houston,Male,Senior,Sales Manager,YES
+ENAME25,10,HR,5700,1990,New York,Male,Senior,HR Head,YES
+ENAME26,20,Finance,6600,1993,Chicago,Female,Mid,Analyst,NO
+ENAME27,30,IT,7600,1994,Los Angeles,Male,Junior,Support,YES
+ENAME28,40,Sales,8700,1998,Houston,Female,Senior,Sales Lead,NO
+ENAME29,10,HR,5800,1991,New York,Female,Mid,HR Manager,YES
+ENAME30,20,Finance,6700,1994,Chicago,Male,Junior,Clerk,NO
+ENAME31,30,IT,7700,1995,Los Angeles,Female,Senior,System Admin,YES
+ENAME32,40,Sales,8800,1999,Houston,Male,Mid,Sales Lead,YES
+ENAME33,10,HR,5900,1992,New York,Female,Junior,Clerk,NO
+ENAME34,20,Finance,6800,1995,Chicago,Male,Mid,Accountant,YES
+ENAME35,30,IT,7800,1996,Los Angeles,Female,Senior,Developer,NO
+ENAME36,40,Sales,8900,2000,Houston,Male,Junior,Salesperson,YES
+ENAME37,10,HR,6000,1993,New York,Female,Senior,HR Executive,NO
+ENAME38,20,Finance,6900,1996,Chicago,Male,Mid,Analyst,YES
+ENAME39,30,IT,7900,1997,Los Angeles,Female,Junior,Engineer,NO
+ENAME40,40,Sales,9000,2001,Houston,Male,Senior,Manager,YES
+ENAME41,10,HR,6100,1994,New York,Female,Junior,Assistant,NO
+ENAME42,20,Finance,7000,1997,Chicago,Male,Mid,Clerk,YES
+ENAME43,30,IT,8000,1998,Los Angeles,Female,Senior,System Admin,NO
+ENAME44,40,Sales,9100,2002,Houston,Male,Junior,Sales Lead,YES
+ENAME45,10,HR,6200,1995,New York,Female,Senior,HR Lead,YES
+ENAME46,20,Finance,7100,1998,Chicago,Male,Mid,Analyst,NO
+ENAME47,30,IT,8100,1999,Los Angeles,Female,Junior,Support,YES
+ENAME48,40,Sales,9200,2003,Houston,Male,Senior,Sales Manager,YES
+ENAME49,10,HR,6300,1996,New York,Female,Mid,HR Manager,NO
+ENAME50,20,Finance,7200,1999,Chicago,Male,Junior,Accountant,YES

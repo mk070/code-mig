@@ -20,21 +20,30 @@ def clean_response(code):
 GEMINI_API_KEY = "AIzaSyDNmwDtBeRtS_0KQR0DTMCLMfW-bK6IGTU"
 genai.configure(api_key=GEMINI_API_KEY)
 
-def translate_code(source_language, target_language, code):
+def translate_code(code,source_language, target_language):
+    print('target_language : ',target_language)
     # Construct the prompt for code conversion
     refined_prompt = (
-        f'''I want you to act as a code analyst and a code migration engineer for a software modernisation project. I will provide you with code written in one programming language, and your job is to convert it into another specified programming language. For example you will do conversion from COBOL to Python or .NET or SQL and vice-versa.
-            Make sure you follow the below rules:
-            1. Your conversion should maintain the original logic and functionality while adhering to the structure of the target language.
-            2. Your code should not have any syntax or semantic errors. 
-            3. You are strictly required to only perform code conversion. Do not include explanations, comments, or any additional information unless explicitly requested. 
-            4. If the source code references any external files or datasets, make sure to include equivalent references in the converted code where necessary.
-            5. Check whether the external files or datasets or database tables are available on the provided destination.
-            6. You must not answer any queries unrelated to code conversion. If a non-code conversion related request is made, respond with: 'Please provide the code for conversion.’
+        f'''You are an advanced AI specializing in code conversion. Your task is to convert multiple {source_language} source files to the {target_language} language while preserving their functionality and structure. The source files are provided in a dictionary format where the 'code' key contains the {source_language} source files, and each key represents a filename with its corresponding code.
+**Instructions:**
+1. Convert all the {source_language} source files provided in the 'code' dictionary to {target_language}.
+2. Merge the converted code into a single output file without any code markers.
+3. Ensure that all functionalities from the input source files are available and preserved in the converted target file.
+4. Maintain correct syntax, indentation, and code structure in the converted code.
+5. Handle .DAT files and other external files correctly based on their format. If the file is binary or has a specific encoding, ensure the converted code reads and processes the file using the correct methods.
+6. Initialize all variables, properties, and fields appropriately to avoid any nullability warnings (such as CS8618 or CS8600 in C#) or runtime errors. If a property or field is non-nullable, ensure it is initialized with a default value or through a constructor.
+7. Do not include any functionality in the converted code that requires user input to terminate the execution unless that functionality is explicitly present in the source code.
+8. If any external references (datasets, database files) are present in the source code, ensure equivalent handling in the target code. The external files are provided in the 'external_files' key, which lists all related datasets and files.
+9. The 'external_files_sample_data' key contains a sample of the first three rows from each dataset, if available. This sample is provided to inform you of the dataset's structure, helping you avoid incorrect assumptions about the data format. Use this sample data to understand the structure but ensure that the actual code interacts with the complete dataset from the 'external_files' key. The model should not create data or simulate datasets on its own unless such functionality is explicitly present in the source language code.
+10. If certain legacy COBOL functionalities cannot be directly converted due to limitations or differences in the target language, adapt the code appropriately while maintaining the original intent and functionality. Provide a working solution rather than changing the entire functionality unnecessarily.
+11. Return only the final converted code as the output, with no additional explanations or metadata.
+12. Strictly don't add Console.Readkey() or any other input termination methods in the converted code unless explicitly mentioned in the source code.
+13. Comment the Console.Readkey() command in .NET code if it is present in the converted code.
+14. Ensure that the converted code is optimized for performance and edge cases, ensuring robustness and reliability. It should be runnable, free from bugs, and avoid trade-offs that compromise the code's integrity.
 
-            Convert source_language - {source_language} to target_language- {target_language}
-            Source-code to convert : {code}'''
-    )
+Here is the source file data for conversion:
+{code}''')
+    
     prompt = [
         {
             'role': 'user',

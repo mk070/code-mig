@@ -3,10 +3,11 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaTimes } from 'react-icons/fa'; // Import the close icon from react-icons
 
-const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
+const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange,MainFile }) => {
   const [githubLink, setGithubLink] = useState('');
   const [repoStructure, setRepoStructure] = useState([]);
   const [files, setFiles] = useState([]);
+  // const [MainFile,setMainFile] = useState('')
   const [selectedMainFile, setSelectedMainFile] = useState(null);
   const [selectedDatabaseFile, setSelectedDatabaseFile] = useState(null);
   const [includeDatabase, setIncludeDatabase] = useState(false);
@@ -95,7 +96,7 @@ const FileUploadPopup = ({ onClose, onFileUpload, onGithubLinkChange }) => {
         formData.append('files', file);
       });
     }
-
+    MainFile(selectedMainFile.name)
     if (selectedMainFile) {
       formData.append('main_file_name', selectedMainFile.name); // Send filename as string
     }
