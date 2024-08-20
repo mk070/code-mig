@@ -3,8 +3,8 @@ import time
 import json
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse  # Ensure HttpResponse is imported
-from django.views.decorators.csrf import csrf_exempt
 from .additionals import gemini_api, source_files, remove_markers,ai
+from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def convert_code(request):
