@@ -16,7 +16,7 @@ const UploadButton = ({ onFileUpload, onGithubLinkChange,MainFile }) => {
     <>
       <button
         onClick={handleButtonClick}
-        className="flex w-full items-center justify-center text-center p-2 bg-blue-500 text-white rounded-md"
+        className="flex w-full items-center justify-center text-center p-2 bg-blue-600 text-white rounded-md"
       >
         <UploadIcon className="mr-2" />
         Upload

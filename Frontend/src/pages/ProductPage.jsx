@@ -9,6 +9,7 @@ import { Navbar } from '../Layout/Navbar.jsx';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import Loader from '../layout/Loader.jsx';
 
 const ProductPage = () => {
   const defaultLanguage = languages[0];
@@ -17,11 +18,15 @@ const ProductPage = () => {
   const [isConvertDisabled, setIsConvertDisabled] = useState(true);
   const [showSourcecodeOutput, setShowSourcecodeOutput] = useState(false);
   const [showConvertedcodeOutput, setShowConvertedcodeOutput] = useState(false);
-
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [output, setOutput] = useState('');
   const [convertedCode, setConvertedCode] = useState('');
   const [analyzerResult, setAnalyzerResult] = useState(null);
   const [convertedCodeOutput, setConvertedCodeOutput] = useState(''); 
+  const [loading, setLoading] = useState(false); // State for loading
+
+  const [mode, setMode] = useState('convert'); // Set default mode to 'compile'
+
 
 
   const getRightDropdownLanguages = (leftLang) => {
@@ -66,6 +71,8 @@ const ProductPage = () => {
   };
 
   const handleConvertClick = async () => {
+    setLoading(true);  // Start the loader
+    setMode('convert'); // Set mode to convert
     if (!SourceLanguage.value || !TargetLanguage.value) {
       toast.error('Please select both source and target languages.');
       return;
@@ -102,36 +109,54 @@ const ProductPage = () => {
       } else {
         toast.error('Error in setting up the request.');
       }
+    }finally {
+      setLoading(false);  // Stop the loader
     }
   };
 
   const handleAnalyzerClick = async () => {
+    setLoading(true)
+    setMode('accuracy')
     if (!output || !convertedCode) {
       toast.error('Please ensure both outputs are available before analyzing.');
       return;
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/analyze/', {
-        source_code: output,
-        converted_code: convertedCode,
-      });
+      const formData = new FormData();
+    
+  
+      formData.append('source_output', output);
+      formData.append('converted_output', convertedCodeOutput);
+      formData.append('source_language', SourceLanguage.value);
+      formData.append('target_language', TargetLanguage.value);
 
-      if (response.status === 200) {
+      const response = await axios.post('http://127.0.0.1:8000/conversion/accuracy', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        responseType: 'text', // Expecting plain text response
+      });
+  
+      console.log('Response from backend:', response.data);
+  
+      if (response.status === 200 && response.data) {
+        toast.success('Code executed successfully!');
         setAnalyzerResult(response.data); // Set the result from the API
+
+     
+      } else if (response.data.error) {
+        toast.error(`Error: ${response.data.error}`);
       } else {
-        toast.error('Error analyzing code.');
+        toast.error('An unexpected error occurred.');
       }
     } catch (error) {
-      console.error('Error analyzing code:', error);
-      if (error.response) {
-        toast.error('An error occurred on the server.');
-      } else if (error.request) {
-        toast.error('No response from the server.');
-      } else {
-        toast.error('Error in setting up the request.');
-      }
+      console.error('Error running code:', error);
+      toast.error('An error occurred while running the code.');
+    } finally {
+      setLoading(false)
     }
+
   };
 
   return (
@@ -216,6 +241,21 @@ const ProductPage = () => {
             <ConvertedcodeOutput output={convertedCodeOutput} />
           )}
         </div>
+        {output && convertedCodeOutput &&  (
+          <div className="mt-8 flex justify-center">
+              <button
+                type='button'
+                className={`p-3 w-1/3 justify-center gap-2 items-center flex bg-green-600 hover:bg-green-600  text-white text-lg font-medium rounded-md shadow-sm`}
+                onClick={handleAnalyzerClick}
+              >
+                {analyzerResult ?  `Accuracy: ${analyzerResult}`: 'Accuracy'}
+              </button>
+          </div>
+        )}
+        
+
+        {loading && <Loader mode={mode} />} {/* Show loader when loading */}
+        {loading && <Loader mode={mode} />} {/* Show loader when loading */}
       
       </div>
     </>

@@ -41,3 +41,23 @@ def convert_code(request):
         return HttpResponse(response, content_type='text/plain')
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def accuracy(request):
+    if request.method == 'POST':
+        source_output= request.POST.get('source_output', '')
+        converted_output= request.POST.get('converted_output', '')
+        source_language = request.POST.get('source_language', '')
+        target_language = request.POST.get('target_language', '')
+        print("converted_output  : ",converted_output)
+
+        try:
+            response = ai.check_accuracy(source_output,converted_output)
+            print("Raw API response:", response)  # Log the raw API response for debugging
+        except Exception as e:
+            print(f"An error occurred during Checking accuracy: {str(e)}")
+            return JsonResponse({'status': 'error', 'message': f'An error occurred during conversion: {str(e)}'}, status=500)
+
+    return HttpResponse(response, content_type='text/plain')
+
+    

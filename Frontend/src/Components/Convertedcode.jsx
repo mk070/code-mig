@@ -5,12 +5,15 @@ import MaximizeIcon from '@mui/icons-material/Maximize';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import Loader from '../layout/Loader';
 
 
 export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRunComplete }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const codeContainerRef = useRef(null);
   const lineNumbersRef = useRef(null);
+  const [loading, setLoading] = useState(false); // State for loading
+  const [mode, setMode] = useState('compile'); // Set default mode to 'compile'
 
   const getLineNumbers = () => {
     const lines = code.split('\n').length;
@@ -28,6 +31,9 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRu
   }, [code]);
 
   const handleRun = async () => {
+    setLoading(true);  // Start the loader
+    setMode('compile'); // Set mode to compile
+
     console.log("heloo")
     try {
       const formData = new FormData();
@@ -94,6 +100,8 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRu
       console.error('Error running code:', error);
       toast.error('An error occurred while running the code.');
     } finally {
+      setLoading(false);  // Stop the loader
+
     }
   };
 
@@ -113,11 +121,11 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRu
           </button>
         </div>
       </div>
-      <div className="relative bg-gray-900 rounded-b-md shadow-lg overflow-hidden">
+      <div className="relative h-80 bg-gray-900 rounded-b-md shadow-lg overflow-hidden">
         <div className="flex">
           <div
             ref={lineNumbersRef}
-            className="w-10 bg-gray-800 text-gray-400 text-right p-2 font-mono text-sm border-r border-gray-700 overflow-hidden h-64 editor-scrollbar"
+            className="w-10 bg-gray-800 h-screen text-gray-400 text-right p-2 font-mono text-sm border-r border-gray-700 overflow-hidden h-64 editor-scrollbar"
           >
             <pre>{getLineNumbers()}</pre>
           </div>
@@ -128,9 +136,9 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRu
             value={code}
             readOnly
             onScroll={syncScroll}
-            className="w-full pl-4 pr-4 py-4 bg-gray-900 text-white border-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 resize-none overflow-auto h-64 editor-scrollbar"
+            className="w-full pl-4 pr-4 py-4 h-screen bg-gray-900 text-white border-none font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 resize-none overflow-auto h-64 editor-scrollbar"
             placeholder="Converted code will appear here..."
-            style={{ lineHeight: '1.5rem' }}
+            style={{ lineHeight: '1.5rem' ,height:'320px'}}
           ></textarea>
         </div>
       </div>
@@ -142,6 +150,8 @@ export const Convertedcode = ({ code, onRun, SourceLanguage, TargetLanguage,onRu
         <PlayArrowIcon />
         Run
       </button>
+      {loading && <Loader mode={mode} />} {/* Show loader when loading */}
+
     </div>
   );
 };

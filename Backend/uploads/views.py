@@ -65,6 +65,9 @@ def save_uploads(request):
         request.session['main_file_name'] = main_file_name
         request.session['database_file_name'] = database_file_name
 
+        print('from uploads : ',request.session['database_file_name'] )
+        print('session : ',request.session.keys())
+
         return JsonResponse({'status': 'success', 'message': 'Files processed successfully'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
