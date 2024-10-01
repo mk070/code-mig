@@ -7,7 +7,7 @@ def handle_cobol(client, temp_folder, main_file, sub_files):
     try:
         # Start the container and run the COBOL compilation directly
         container = client.containers.run(
-            image="multi-language-compiler-updated",
+            image="madhanp7/multi-language-compiler-updated",
             volumes={
                 temp_folder: {'bind': '/app/data', 'mode': 'rw'}
             },
@@ -24,7 +24,7 @@ def handle_cobol(client, temp_folder, main_file, sub_files):
                 container=container,
                 exit_status=exec_result.exit_code,
                 command=" ".join(compile_command),
-                image="multi-language-compiler-updated",
+                image="madhanp7/multi-language-compiler-updated",
                 stderr=exec_result.stderr.decode('utf-8')
             )
         
@@ -36,7 +36,7 @@ def handle_cobol(client, temp_folder, main_file, sub_files):
                 container=container,
                 exit_status=exec_result.exit_code,
                 command=" ".join(run_command),
-                image="multi-language-compiler-updated",
+                image="madhanp7/multi-language-compiler-updated",
                 stderr=exec_result.stderr.decode('utf-8')
             )
         
@@ -67,7 +67,7 @@ def handle_multiple_cobol_files(client, temp_folder, main_file, sub_files):
     try:
         # Start the container
         container = client.containers.run(
-            image="multi-language-compiler-updated",
+            image="madhanp7/multi-language-compiler-updated",
             volumes={
                 temp_folder: {'bind': '/app/data', 'mode': 'rw'}
             },
@@ -88,7 +88,7 @@ def handle_multiple_cobol_files(client, temp_folder, main_file, sub_files):
                         container=container,
                         exit_status=exec_result.exit_code,
                         command=" ".join(compile_command),
-                        image="multi-language-compiler-updated",
+                        image="madhanp7/multi-language-compiler-updated",
                         stderr=exec_result.stderr.decode('utf-8')
                     )
                 object_files.append(obj_file)
@@ -101,7 +101,7 @@ def handle_multiple_cobol_files(client, temp_folder, main_file, sub_files):
                 container=container,
                 exit_status=exec_result.exit_code,
                 command=" ".join(link_command),
-                image="multi-language-compiler-updated",
+                image="madhanp7/multi-language-compiler-updated",
                 stderr=exec_result.stderr.decode('utf-8')
             )
         
@@ -113,7 +113,7 @@ def handle_multiple_cobol_files(client, temp_folder, main_file, sub_files):
                 container=container,
                 exit_status=exec_result.exit_code,
                 command=" ".join(run_command),
-                image="multi-language-compiler-updated",
+                image="madhanp7/multi-language-compiler-updated",
                 stderr=exec_result.stderr.decode('utf-8')
             )
         
@@ -144,7 +144,7 @@ def handle_cobol_with_sql(client, temp_folder, main_file, sub_files, sql_file=No
     container = None
     try:
         container = client.containers.run(
-            image="multi-language-compiler-updated",
+            image="madhanp7/multi-language-compiler-updated",
             volumes={temp_folder: {'bind': '/app/data', 'mode': 'rw'}},
             working_dir="/app",
             detach=True,
@@ -165,7 +165,7 @@ def handle_cobol_with_sql(client, temp_folder, main_file, sub_files, sql_file=No
                     container=container,
                     exit_status=exec_result.exit_code,
                     command=command,
-                    image="multi-language-compiler-updated",
+                    image="madhanp7/multi-language-compiler-updated",
                     stderr=output
                 )
             return output
@@ -206,7 +206,7 @@ def handle_cobol_with_sql(client, temp_folder, main_file, sub_files, sql_file=No
                         container=container,
                         exit_status=exec_result.exit_code,
                         command=f"ls /app/data/{basename}_compiled",
-                        image="multi-language-compiler-updated",
+                        image="madhanp7/multi-language-compiler-updated",
                         stderr="Compiled COBOL file not found"
                     )
 
@@ -221,7 +221,7 @@ def handle_cobol_with_sql(client, temp_folder, main_file, sub_files, sql_file=No
                         container=container,
                         exit_status=exec_result.exit_code,
                         command=f"ls /app/data/{basename}",
-                        image="multi-language-compiler-updated",
+                        image="madhanp7/multi-language-compiler-updated",
                         stderr="Compiled COBOL file not found"
                     )
 

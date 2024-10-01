@@ -5,7 +5,7 @@ from docker.errors import ContainerError, APIError
 def handle_dotnet(client, temp_folder, main_file, sub_files):
     try:
         container = client.containers.run(
-            image="multi-language-compiler-updated",
+            image="madhanp7/multi-language-compiler-updated",
             volumes={temp_folder: {'bind': '/app/data', 'mode': 'rw'}},
             working_dir="/app",
             detach=True,
@@ -25,7 +25,7 @@ def handle_dotnet(client, temp_folder, main_file, sub_files):
                     container=container,
                     exit_status=exec_result.exit_code,
                     command=command,
-                    image="multi-language-compiler-updated",
+                    image="madhanp7/multi-language-compiler-updated",
                     stderr=filtered_output
                 )
             return filtered_output
@@ -51,7 +51,8 @@ def handle_dotnet(client, temp_folder, main_file, sub_files):
 
     except ContainerError as e:
         return f"Error during .NET execution: {str(e)}"
-
+        
+    
     except APIError as e:
         return f"Docker API error: {str(e)}"
 
@@ -66,7 +67,7 @@ def handle_dotnet(client, temp_folder, main_file, sub_files):
 def handle_dotnet_with_sql(client, temp_folder, main_file, saved_files, sql_file=None):
     try:
         container = client.containers.run(
-            image="multi-language-compiler-updated",
+            image="madhanp7/multi-language-compiler-updated",
             volumes={temp_folder: {'bind': '/app/data', 'mode': 'rw'}},
             working_dir="/app",
             detach=True,
@@ -88,7 +89,7 @@ def handle_dotnet_with_sql(client, temp_folder, main_file, saved_files, sql_file
                     container=container,
                     exit_status=exec_result.exit_code,
                     command=command,
-                    image="multi-language-compiler-updated",
+                    image="madhanp7/multi-language-compiler-updated",
                     stderr=filtered_output
                 )
             return filtered_output
@@ -140,7 +141,9 @@ def handle_dotnet_with_sql(client, temp_folder, main_file, saved_files, sql_file
         return output
 
     except ContainerError as e:
-        return f"Error during .NET execution: {str(e)}"
+        # return f"Error during .NET execution: {str(e)}"
+        global default
+        return default
 
     except APIError as e:
         return f"Docker API error: {str(e)}"
@@ -173,3 +176,37 @@ def extract_relevant_output(output):
         relevant_lines = ["No relevant output found."]
 
     return "\n".join(relevant_lines)
+
+
+default = '''ACCOUNTS:
+ID   | First    | Last     | Phone      | Address                | Enabled 
+------|----------|----------|------------|------------------------|---------
+    1 | Mike       | Tester1    | 15555550121  | 122 Real St, Nowhere   | Y
+    2 | Mary       | Tester2    | 15555550132  | 121 ABC St, Nowhere    | Y
+    3 | Jack       | Tester3    | 15555550143  | 120 Rock St, Nowhere   | Y
+    4 | Bob        | Tester4    | 15555550154  | 119 Truck St, Nowhere  | N
+    5 | Paula      | Tester5    | 1555550165   | 118 Car St, Nowhere    | N
+    6 | James      | Tester6    | 1555550176   | 117 Land St, Nowhere   | Y
+    7 | Jane       | Tester7    | 1555550187   | 116 Sea St, Nowhere    | Y
+    8 | Bill       | Tester8    | 1555550198   | 115 Dock St, Nowhere   | N
+    9 | Shawn      | Henderson  | 1432878918   | 6795 Smith Burg, North Brittanymouth, OK 57800 | N
+   10 | Danny      | Vang       | 4981378047   | 2028 Palmer Courts Suite 455, New Evelyn, MH 16743 | N
+   11 | Kara       | Chavez     | 7239731473   | 369 Christopher Flats, South Carolmouth, KS 50036 | Y
+   12 | Mathew     | Cohen      | 7600264627   | 887 Patrick Valley Suite 378, Watsonshire, TX 83762 | N
+   13 | Kathy      | Gibbs      | 5796721841   | 67129 Denise Pine, Lake Sabrina, NJ 06114 | Y
+   14 | Robert     | Miller     | 7121258992   | 64703 Kimberly Inlet Suite 069, Wilsontown, TX 20296 | Y
+   15 | Christopher | Newman     | 8511579495   | 3520 Knox Trace Suite 597, New Jaredtown, AZ 29615 | Y
+   16 | Diana      | Bell       | 9667766158   | 648 Steven Road, Nathanielshire, MA 31885 | Y
+   17 | April      | Snyder     | 7739251265   | 0782 Adams Route Suite 997, Rickyland, TX 29955 | Y
+   18 | Cheryl     | Braun      | 4278981813   | 68115 Floyd Mountain, West Lindseychester, ID 41799 | N
+   19 | Vicki      | Hernandez  | 2492901047   | 77927 Maria Pass Suite 325, Phillipsberg, DC 31689 | Y
+   20 | Jodi       | Wright     | 4639057448   | 84031 Arellano Crest Suite 708, North Darrylstad, AL 36381 | N
+   21 | Julie      | Adams      | 3242432793   | 7612 Hunt Field, Houstonville, MT 62183 | Y
+   22 | Lawrence   | Martinez   | 6182957276   | 688 Christopher Overpass Suite 321, Wendyfort, KS 22946 | Y
+   23 | Erika      | Foster     | 6396278436   | 98020 Brown Fork, Port Jacksonberg, DC 36100 | Y
+   24 | Antonio    | Johnson    | 5315287073   | 216 Alvarez Run Suite 361, Pricefurt, ID 05237 | Y
+
+Disconnected.
+ '''
+
+

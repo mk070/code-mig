@@ -4,7 +4,7 @@ from docker.errors import ContainerError, APIError
 def handle_python(client, temp_folder, main_file, sub_files):
     try:
         container = client.containers.run(
-            image="multi-language-compiler-updated",
+            image="madhanp7/multi-language-compiler-updated",
             volumes={temp_folder: {'bind': '/app/data', 'mode': 'rw'}},
             working_dir="/app",
             detach=True,
@@ -20,7 +20,7 @@ def handle_python(client, temp_folder, main_file, sub_files):
                 container=container,
                 exit_status=exec_result.exit_code,
                 command=f"python3 /app/data/{main_file}",
-                image="multi-language-compiler-updated",
+                image="madhanp7/multi-language-compiler-updated",
                 stderr=output
             )
 

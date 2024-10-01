@@ -5,3 +5,4 @@ subprocess.run
 openai
 django-cors-headers
 gitpython
+docker

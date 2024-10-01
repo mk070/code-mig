@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.files.storage import default_storage
 from git import Repo
+from backend import globals
 
 @csrf_exempt
 def save_uploads(request):
@@ -19,6 +20,9 @@ def save_uploads(request):
 
 
         print('from frontend - main_file_name : ',main_file_name)
+        print('from frontend - database_file_name : ',database_file_name)
+        globals.DATABASE_FILE_NAME = database_file_name
+        print('DATABASE_FILE_NAME : ',globals.DATABASE_FILE_NAME)
 
         if main_file_name:
             if main_file_name[-4:] != '.cbl' and main_file_name[-4:] != '.cob':

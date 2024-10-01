@@ -7,6 +7,7 @@ from compile.additionals.cobol import handle_cobol, handle_multiple_cobol_files,
 from compile.additionals.dotnet import handle_dotnet, handle_dotnet_with_sql
 from compile.additionals.java import handle_java, handle_java_with_sql
 from compile.additionals.python import handle_python
+from backend import globals
 
 @csrf_exempt
 def execute_code(request):
@@ -27,8 +28,8 @@ def execute_code(request):
         saved_files = []
         cobol_files = []
         print('session : ',request.session.keys())
-    
-        saved_sql_file = 'db.sql'    # --------------------> this will be updated dinamically
+        print('db name : ' ,globals.DATABASE_FILE_NAME)
+        saved_sql_file = globals.DATABASE_FILE_NAME or ''   # --------------------> this will be updated dinamically
         sql = 0
         for file in files:
             file_path = os.path.join(temp_folder, file.name)
